@@ -2,7 +2,7 @@
 
 var schema = require('./schema');
 
-var UserManagement = schema.UserManagement;
+var UserManagement = schema.User;
 
 
 exports.createUser = function (req,callback){
@@ -48,4 +48,12 @@ exports.removeUser = function (req,callback){
         }, function(err) {
             callback(err);
     });
+}
+
+exports.getUsers = function (query,callback){
+		UserManagement.find(function(err, users) {
+				callback(err,users)
+		});
+	
+	
 }
