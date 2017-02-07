@@ -2,7 +2,8 @@
 
 
 var mongoose = require('mongoose'),
-  Sensor = mongoose.model('Sensor');
+    schema = require('./schema'),
+  Sensor = schema.Sensor;
 
 exports.list_sensors = function(req, res) {
   Sensor.find({}, function(err, sensor) {
