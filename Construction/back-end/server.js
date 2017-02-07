@@ -31,7 +31,7 @@ router.route('/users')
     // create an user (accessed at POST http://localhost:5000/api/users)
     .post(function(req, res) {
 		response = res;
-		modelUser.createUser(req, function (err){
+		userManagement.createUser(req, function (err){
 			if(err)
 				res.status(500).send(err.message);
 			else
@@ -48,7 +48,7 @@ router.route('/users')
 			email : req.param('email'),
 			search : req.param('search')
 		}
-		modelUser.getUsers(query,function(err,users){
+		userManagement.getUsers(query,function(err,users){
 			if (err)
                 res.status(500).send(err.message);
 			else if(users == undefined || users == null )
@@ -63,7 +63,7 @@ router.route('/users/:user_id')
     // get the bear with that id (accessed at GET http://localhost:5000/api/users/:user_id)
     .get(function(req, res) {
 		response = res;
-		modelUser.getUserProfile(req,function(err,user){
+		userManagement.getUserProfile(req,function(err,user){
 			if (err)
                 res.status(500).send(err.message);
 			else if(user == undefined || user == null  )
@@ -75,7 +75,7 @@ router.route('/users/:user_id')
 	
 	.put(function(req, res) {
 		response = res;
-			modelUser.updateUser({email:req.params.user_id},req.body,function(err,user){
+			userManagement.updateUser({email:req.params.user_id},req.body,function(err,user){
 				//console.log("Err: "+JSON.stringify(err, ["message", "arguments", "type", "name"]));
 				if (err)
 					res.status(500).send(err.message);
@@ -88,7 +88,7 @@ router.route('/users/:user_id')
 	
 	.delete(function(req, res) {
 		response = res;
-		modelUser.removeUser(req,function(err){
+		userManagement.removeUser(req,function(err){
 			if (err)
                 res.status(500).send(err.message);
 			else
