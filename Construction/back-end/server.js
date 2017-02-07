@@ -1,0 +1,133 @@
+// call the packages we need
+var express    = require('express');        // call express
+var app        = express();                 // define our app using express
+var bodyParser = require('body-parser');
+var userManagement = require ('./model/user_management.js');
+var sensorManagement = require ('./model/sensor_management.js');
+var response;
+//Catch uncaughtExceptions
+process.on('uncaughtException', function (err) {
+  console.log("Exception caught",err);
+  response.status(500).send('Something broke!')
+})
+
+// configure app to use bodyParser()
+// this will let us get the data from a POST
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
+var router = express.Router();              // get an instance of the express Router
+
+// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+router.get('/', function(req, res) {
+    res.json({ message: 'hooray! welcome to our api!' });   
+});
+
+router.route('/users')
+
+    // create an user (accessed at POST http://localhost:5000/api/users)
+    .post(function(req, res) {
+		response = res;
+		modelUser.createUser(req, function (err){
+			if(err)
+				res.status(500).send(err.message);
+			else
+				res.status(201).json({ message: 'User created!' });
+		});
+        
+        
+    })
+	
+	.get(function(req, res) {
+		response = res;
+		console.log("Get all users");
+		var query = {
+			email : req.param('email'),
+			search : req.param('search')
+		}
+		modelUser.getUsers(query,function(err,users){
+			if (err)
+                res.status(500).send(err.message);
+			else if(users == undefined || users == null )
+					res.status(404).json({ message: 'User not found' })
+            else
+				res.status(200).json(users);
+		});
+    });
+
+router.route('/users/:user_id')
+
+    // get the bear with that id (accessed at GET http://localhost:5000/api/users/:user_id)
+    .get(function(req, res) {
+		response = res;
+		modelUser.getUserProfile(req,function(err,user){
+			if (err)
+                res.status(500).send(err.message);
+			else if(user == undefined || user == null  )
+					res.status(404).json({ message: 'User not found' })
+			else
+				res.status(200).json(user);
+		});
+    })
+	
+	.put(function(req, res) {
+		response = res;
+			modelUser.updateUser({email:req.params.user_id},req.body,function(err,user){
+				//console.log("Err: "+JSON.stringify(err, ["message", "arguments", "type", "name"]));
+				if (err)
+					res.status(500).send(err.message);
+				else if(user == undefined || user == null  )
+					res.status(404).json({ message: 'User not found' })
+				else
+					res.status(204).send();
+			});
+    })
+	
+	.delete(function(req, res) {
+		response = res;
+		modelUser.removeUser(req,function(err){
+			if (err)
+                res.status(500).send(err.message);
+			else
+				res.status(200).json({ message: 'User deleted' });
+		});
+    });
+	
+
+// The http server will listen to an appropriate port, or default to
+// port 5000.
+var theport = process.env.PORT || 5000;
+
+app.use('/api', router);
+
+app.listen(theport);
+console.log('Magic happens on port ' + theport);
+
+//
+// Preamble
+var http = require ('http');	     // For serving a basic web page.
+var mongoose = require ("mongoose"); // The reason for this demo.
+
+// Here we find an appropriate database to connect to, defaulting to
+// localhost if we don't find one.  
+var uristring = 
+  process.env.MONGODB_URI || 
+  'mongodb://52.35.182.188:27017/maindb';
+
+
+
+// Makes connection asynchronously.  Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.connect(uristring, function (err, res) {
+  if (err) { 
+    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+    console.log ('Succeeded connected to: ' + uristring);
+  }
+});
+
+
+
