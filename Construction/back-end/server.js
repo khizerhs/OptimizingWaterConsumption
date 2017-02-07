@@ -2,8 +2,8 @@
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
-var userManagement = require ('./model/user_management.js');
-var sensorManagement = require ('./model/sensor_management.js');
+var userManagement = require ('./data_management/user_management.js');
+var sensorManagement = require ('./data_management/sensor_management.js');
 var response;
 //Catch uncaughtExceptions
 process.on('uncaughtException', function (err) {
