@@ -1,4 +1,30 @@
-// call the packages we need
+var express = require('express'),
+  app = express(),
+  port = process.env.PORT || 3000,
+  mongoose = require('mongoose'),
+  Sensor = require('./api/models/smartIrrigation-sensor-model'),
+  bodyParser = require('body-parser');
+  
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://52.35.182.188:27017/maindb'); 
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+var routes = require('./routes/smartIrrigation-sensor-routes');
+routes(app);
+
+
+app.listen(port);
+
+
+console.log('RESTful API server started on: ' + port);
+
+
+
+/*// call the packages we need
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
@@ -128,6 +154,6 @@ mongoose.connect(uristring, function (err, res) {
     console.log ('Succeeded connected to: ' + uristring);
   }
 });
-
+*/
 
 
