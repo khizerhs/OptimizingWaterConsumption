@@ -1,7 +1,7 @@
 {
-  "name": "hello-mongoose",
-  "version": "0.3.0",
-  "description": "MongoDB with Mongoose on Node.js example",
+  "name": "smart-irrigation",
+  "version": "0.1.0",
+  "description": "Masters project cmpe 295B",
   "main": "app.js",
   "engines" : { 
       "node" : ">=4.1.1",
