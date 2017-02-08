@@ -1,62 +1,4 @@
-'use strict';
 
-
-var mongoose = require('mongoose'),
-    schema = require('./schema'),
-  Crop = schema.Crop;
-
-exports.list_crops = function(req, res) {
-  Crop.find({}, function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json(crop);
-  });
-};
-
-
-exports.create_crop = function(req, res) {
-  var new_crop = new Crop(req.body);
-  new_crop.save(function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json(crop);
-  });
-};
-
-
-exports.read_crop = function(req, res) {
-  Crop.findById(req.params.cropId, function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json(crop);
-  });
-};
-
-
-exports.update_crop = function(req, res) {
-  Crop.findOneAndUpdate(req.params.cropId, req.body, {new: true}, function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json(crop);
-  });
-};
-
-
-exports.delete_crop = function(req, res) {
-
-
-  Crop.remove({
-    _id: req.params.cropId
-  }, function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json({ message: 'Crop successfully deleted' });
-  });
-};
-
-
-
-/*
 
 var schema = require('./schema');
 
@@ -101,8 +43,8 @@ exports.updateCrop = function (query, conditions,callback){
 
 exports.removeCrop = function (req,callback){
 	CropManagement.remove({
-            email : req.params.crop_id
+            email : req.params.user_id
         }, function(err) {
             callback(err);
     });
-}*/
+}

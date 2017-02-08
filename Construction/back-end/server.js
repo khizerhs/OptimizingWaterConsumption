@@ -15,8 +15,11 @@ app.use(bodyParser.json());
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
+var crop_routes = require('./routes/smartIrrigation-crop-routes');
 sensor_routes(app);
 user_routes(app);
+crop_routes(app);
+
 
 app.listen(port);
 
