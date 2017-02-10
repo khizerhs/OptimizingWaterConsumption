@@ -9,17 +9,18 @@ exports.list_crops = function(req, res) {
   Crop.find({}, function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.json(crop);
   });
 };
-
 
 exports.create_crop = function(req, res) {
   var new_crop = new Crop(req.body);
   new_crop.save(function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.status(201).json(crop);
   });
 };
 
@@ -28,7 +29,8 @@ exports.read_crop = function(req, res) {
   Crop.findById(req.params.cropId, function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else    
+      res.json(crop);
   });
 };
 
@@ -37,7 +39,8 @@ exports.update_crop = function(req, res) {
   Crop.findOneAndUpdate(req.params.cropId, req.body, {new: true}, function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.json(crop);
   });
 };
 
@@ -50,7 +53,8 @@ exports.delete_crop = function(req, res) {
   }, function(err, crop) {
     if (err)
       res.send(err);
-    res.json({ message: 'Crop successfully deleted' });
+    else
+      res.json({ message: 'Crop successfully deleted' });
   });
 };
 
