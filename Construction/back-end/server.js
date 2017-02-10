@@ -8,6 +8,11 @@ var express = require('express'),
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://52.35.182.188:27017/maindb'); 
 
+//Catch uncaughtExceptions
+process.on('uncaughtException', function (err) {
+  console.log("Exception caught",err);
+  response.status(500).send('Something broke!')
+})
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

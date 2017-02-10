@@ -14,6 +14,7 @@ module.exports = function(app) {
     .delete(smartIrrigation.delete_sensor);
 };
 
+
 // Put MQTT consumer here temporary
 var sensorHistoryManagement = require('../data_management/sensor_history_management')
 
