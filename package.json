@@ -3,17 +3,23 @@
   "version": "0.1.0",
   "description": "Masters project cmpe 295B",
   "main": "app.js",
-  "engines" : { 
-      "node" : ">=4.1.1",
-      "npm" : ">=2.1.x"
+  "engines": {
+    "node": ">=4.1.1",
+    "npm": ">=2.1.x"
   },
   "repository": "https://github.com/fpisciotta/OptimizingWaterConsumption.git",
-  "authors": [ "Fabrizio Pisciotta", "Khizer Hasan Syed", "Chen Yu Wu", "Shashank Vadali" ],
+  "authors": [
+    "Fabrizio Pisciotta",
+    "Khizer Hasan Syed",
+    "Chen Yu Wu",
+    "Shashank Vadali"
+  ],
   "license": "MIT",
   "dependencies": {
-  "express": "~4.0.0",
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
     "mongoose": ">=4.1.11",
-	"body-parser": "~1.0.1"
+    "mqtt": "^2.3.1",
+    "request": "^2.79.0"
   }
 }
-
