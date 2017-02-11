@@ -1,6 +1,5 @@
 'use strict';
 
-
 var mongoose = require('mongoose'),
     schema = require('./schema'),
   Sensor = schema.Sensor;
@@ -9,11 +8,10 @@ exports.list_sensors = function(req, res) {
   Sensor.find({}, function(err, sensor) {
     if (err)
       res.send(err);
-    res.json(sensor);
+    else
+      res.json(sensor);
   });
 };
-
-
 
 
 exports.create_sensor = function(req, res) {
@@ -21,25 +19,32 @@ exports.create_sensor = function(req, res) {
   new_sensor.save(function(err, sensor) {
     if (err)
       res.send(err);
-    res.json(sensor);
+    else
+      res.status(201).json(sensor);
   });
 };
 
 
 exports.read_sensor = function(req, res) {
   Sensor.findById(req.params.sensorId, function(err, sensor) {
-    if (err)
+    if (sensor == undefined || sensor == null)
+      res.status(404).json({message: 'Sensor Not found'});
+    else if (err)
       res.send(err);
-    res.json(sensor);
+    else
+      res.json(sensor);
   });
 };
 
 
 exports.update_sensor = function(req, res) {
   Sensor.findOneAndUpdate(req.params.sensorId, req.body, {new: true}, function(err, sensor) {
-    if (err)
-      res.send(err);
-    res.json(sensor);
+    if (sensor == undefined || sensor == null)
+      res.status(404).json({message: 'sensor Not found'});
+    else if (err)
+      res.status(400).json(err);
+    else    
+      res.json(sensor);
   });
 };
 
@@ -51,8 +56,9 @@ exports.delete_sensor = function(req, res) {
     _id: req.params.sensorId
   }, function(err, sensor) {
     if (err)
-      res.send(err);
-    res.json({ message: 'Sensor successfully deleted' });
+      res.status(400).json(err);
+    else
+      res.json({ message: 'Sensor successfully deleted' });
   });
 };
 
@@ -100,7 +106,9 @@ exports.updateSensor = function (query, conditions,callback){
 
 exports.removeSensor = function (req,callback){
 	SensorManagement.remove({
-            email : req.params.user_id
+            email : req.params.
+
+_id
         }, function(err) {
             callback(err);
     });

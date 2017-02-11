@@ -9,35 +9,42 @@ exports.list_crops = function(req, res) {
   Crop.find({}, function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.json(crop);
   });
 };
-
 
 exports.create_crop = function(req, res) {
   var new_crop = new Crop(req.body);
   new_crop.save(function(err, crop) {
     if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.status(201).json(crop);
   });
 };
 
 
 exports.read_crop = function(req, res) {
   Crop.findById(req.params.cropId, function(err, crop) {
-    if (err)
+    if (crop == undefined || crop == null)
+      res.status(404).json({message: 'Crop Not found'});
+    else if (err)
       res.send(err);
-    res.json(crop);
+    else
+      res.json(crop);
   });
 };
 
 
 exports.update_crop = function(req, res) {
   Crop.findOneAndUpdate(req.params.cropId, req.body, {new: true}, function(err, crop) {
-    if (err)
-      res.send(err);
-    res.json(crop);
+    if (crop == undefined || crop == null)
+      res.status(404).json({message: 'Crop Not found'});
+    else if (err)
+      res.status(400).json(err);
+    else    
+      res.json(user);
   });
 };
 
@@ -49,8 +56,9 @@ exports.delete_crop = function(req, res) {
     _id: req.params.cropId
   }, function(err, crop) {
     if (err)
-      res.send(err);
-    res.json({ message: 'Crop successfully deleted' });
+      res.status(400).json(err);
+    else
+      res.json({ message: 'Crop successfully deleted' });
   });
 };
 
