@@ -43,31 +43,31 @@ exports.createSensorHistory = function (sensorType, sensorData, callback){
 function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
     switch (sensorType) {
         case topics[0]:
-            if (!data.temp) {
+            if (!data.t) {
                 cb('[createSensorHistoryManagement] data.temp does not exist')
                 return null
             }
 
-            field2 = 'field2=' + data.temp.slice(0, data.temp.length - 1);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.temp});
+            field2 = 'field2=' + data.t.slice(0, data.t.length - 1);
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.t});
 
         case topics[1]:
-            if (!data.hum) {
+            if (!data.h) {
                 cb('[createSensorHistoryManagement] data.hum does not exist')
                 return null
             }
 
-            field1 = 'field1=' + data.hum.slice(0, data.hum.length - 1);;
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.hum});
+            field1 = 'field1=' + data.h.slice(0, data.h.length - 1);;
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.h});
 
         case topics[2]:
-            if (!data.soil) {
+            if (!data.s) {
                 cb('[createSensorHistoryManagement] data.soil does not exist')
                 return null
             }
 
-            field3 = 'field3=' + data.soil.slice(0, data.soil.length - 1);;
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.soil});
+            field3 = 'field3=' + data.s.slice(0, data.s.length - 1);;
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.s});
         
         default:
             cb('[exports.createSensorHistoryManagement] ' + sensorType + ' undefined');
