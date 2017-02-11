@@ -2,7 +2,7 @@
   "name": "smart-irrigation",
   "version": "0.1.0",
   "description": "Masters project cmpe 295B",
-  "main": "app.js",
+  "main": "Construction/back-end/server.js",
   "engines": {
     "node": ">=4.1.1",
     "npm": ">=2.1.x"
@@ -21,5 +21,6 @@
     "mongoose": ">=4.1.11",
     "mqtt": "^2.3.1",
     "request": "^2.79.0"
-  }
+  },
+  "scripts": { "start": "node Construction/back-end/server.js"}
 }

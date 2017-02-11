@@ -14,9 +14,9 @@
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
 #define FLOWMETERPIN       2
-#define SOLENOIDPIN       4
 dht DHT;
 
+unsigned int SOLENOIDPIN ;
 volatile byte pulseCount;  
 
 float flowRate;
@@ -33,6 +33,7 @@ void setup() {
 
   Ciao.begin(); // CIAO INIT
   Serial.begin(9600);  
+  SOLENOIDPIN = 4;
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
   pinMode(SOLENOIDPIN, OUTPUT); 
@@ -76,7 +77,7 @@ void loop() {
     uri += String(DHT.humidity);
  
     
-    makeRequestMQTT("arduino-hum","{\"hum\":\""+String(DHT.humidity)+"\"}");
+    makeRequestMQTT("arduino-hum","{\"h\":\""+String(DHT.humidity)+"\"}");
     //makeRequest(uri);
 
     uri = "/update?api_key=";
@@ -85,7 +86,7 @@ void loop() {
     uri += String(DHT.temperature);
 
     //makeRequest(uri);
-    makeRequestMQTT("arduino-temp","{\"temp\":\""+String(DHT.temperature)+"\"}");
+    makeRequestMQTT("arduino-temp","{\"t\":\""+String(DHT.temperature)+"\"}");
     
     unsigned int state = digitalReadOutputPin(SOLENOIDPIN);
     float SoilMoistureReading = readSoilMoisture();
@@ -97,12 +98,12 @@ void loop() {
     uri += String(SoilMoistureReading);
     
     //makeRequest(uri);
-    makeRequestMQTT("arduino-soil","{\"soil\":\""+String(SoilMoistureReading)+"\"}");
-    
-    while(SoilMoistureReading > 0 && SoilMoistureReading < 10 && SoilMoistureReading < 45){
+    makeRequestMQTT("arduino-soil","{\"s\":\""+String(SoilMoistureReading)+"\"}");
+    //Serial.println("State: "+state);
+    while(SoilMoistureReading > 0 && SoilMoistureReading < 18 && SoilMoistureReading < 45){
         //if(state == LOW){
-        //  digitalWrite(solenoidPin, HIGH);
-        //  Serial.println("Valve opened!!!");
+          digitalWrite(SOLENOIDPIN, HIGH);
+          Serial.println("Valve opened!!!");
         //}
         //Delay 5 seconds
         unsigned long oldTime = millis();
@@ -135,7 +136,7 @@ void loop() {
       uri += "&field4=";
       uri += String(totalMilliLitres);
       //makeRequest(uri);
-      makeRequestMQTT("arduino-water","{\"water\":\""+String(totalMilliLitres)+"\"}");
+      makeRequestMQTT("arduino-water","{\"w\":\""+String(totalMilliLitres)+"\"}");
     }
     delay(3000); // Thinkspeak policy
 
@@ -179,7 +180,7 @@ void makeRequestMQTT(char* topic, String dataRequest){
 }
 
 float readSoilMoisture(){
-  float Count = analogRead(A0);
+  float Count = analogRead(A2);
   float Voltage = Count * (5.0 / 1023);// convert from count to raw voltage
   Serial.print("Analog read \t"); // tab character
   Serial.println(Count);
