@@ -27,9 +27,11 @@ exports.create_crop = function(req, res) {
 
 exports.read_crop = function(req, res) {
   Crop.findById(req.params.cropId, function(err, crop) {
-    if (err)
+    if (crop == undefined || crop == null)
+      res.status(404).json({message: 'Crop Not found'});
+    else if (err)
       res.send(err);
-    else    
+    else
       res.json(crop);
   });
 };
@@ -37,10 +39,12 @@ exports.read_crop = function(req, res) {
 
 exports.update_crop = function(req, res) {
   Crop.findOneAndUpdate(req.params.cropId, req.body, {new: true}, function(err, crop) {
-    if (err)
-      res.send(err);
-    else
-      res.json(crop);
+    if (crop == undefined || crop == null)
+      res.status(404).json({message: 'Crop Not found'});
+    else if (err)
+      res.status(400).json(err);
+    else    
+      res.json(user);
   });
 };
 
@@ -52,7 +56,7 @@ exports.delete_crop = function(req, res) {
     _id: req.params.cropId
   }, function(err, crop) {
     if (err)
-      res.send(err);
+      res.status(400).json(err);
     else
       res.json({ message: 'Crop successfully deleted' });
   });
