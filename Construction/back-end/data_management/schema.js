@@ -49,7 +49,7 @@ var sensorHistorySchema = new mongoose.Schema({
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
-var waterConsumptionHistorySchema = new mongoose.Schema({
+var weatherHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   precipitation : { type: String},
   solar_radiation:{ type: String},
@@ -59,7 +59,7 @@ var waterConsumptionHistorySchema = new mongoose.Schema({
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
-var weatherHistorySchema = new mongoose.Schema({
+var waterConsumptionHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   evatranspiration:{ type: String},
   water_consumption:{ type: String},

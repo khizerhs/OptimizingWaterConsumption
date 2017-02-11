@@ -1,8 +1,10 @@
 'use strict';
+var commonVariables = require('./common_variables')
 
 var mongoose = require('mongoose'),
     schema = require('./schema'),
   Sensor = schema.Sensor;
+var topics = commonVariables.mqtt_topics
 
 exports.list_sensors = function(req, res) {
   Sensor.find({}, function(err, sensor) {
@@ -61,6 +63,22 @@ exports.delete_sensor = function(req, res) {
       res.json({ message: 'Sensor successfully deleted' });
   });
 };
+
+exports.querySensorId = function(sensorType) {
+    switch (sensorType) {
+        case topics[0]:
+            return mongoose.Types.ObjectId("589a81bed5bc860004072f99");
+            
+        case topics[1]:
+            return mongoose.Types.ObjectId("589a84d2d5bc860004072f9a");
+
+        case topics[2]:
+            return mongoose.Types.ObjectId("589d5aeca96c1229e7e04d57");
+        
+        default:
+            return null;
+    }
+}
 
 /* 
 var schema = require('./schema');

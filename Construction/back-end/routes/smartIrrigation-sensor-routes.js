@@ -14,14 +14,15 @@ module.exports = function(app) {
     .delete(smartIrrigation.delete_sensor);
 };
 
-
 // Put MQTT consumer here temporary
 var sensorHistoryManagement = require('../data_management/sensor_history_management')
+var waterHistoryManagement = require('../data_management/water_history_management')
+var commonVariables = require('../data_management/common_variables')
 
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://52.35.182.188:1883')
 
-var topics = ['arduino-temp', 'arduino-hum', 'arduino-soil', 'arduino-water']
+var topics = commonVariables.mqtt_topics
 
 client.on('connect', function () {
   console.log("Start mqtt")
@@ -36,11 +37,14 @@ client.on('message', function (topic, message) {
   // get message from the subscribed topics
 
   if (topics[3] == topic) {
-    // to be completed
+    waterHistoryManagement.createWaterHistory(message.toString(), function(err) {
+      console.log("MQTT createWaterHistory error");
+      console.log(err);
+    })
   } else {
     sensorHistoryManagement.createSensorHistory(topic.toString(), message.toString(), function(err) {
       console.log("MQTT createSensorHistory error");
       console.log(err);
-    });
+    })
   }
 })
