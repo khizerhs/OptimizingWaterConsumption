@@ -28,10 +28,12 @@ var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
 var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
+var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-routes');
 sensor_routes(app);
 user_routes(app);
 crop_routes(app);
-waterHistory_routes(app)
+waterHistory_routes(app);
+sensorHistory_routes(app);
 
 app.listen(port);
 
