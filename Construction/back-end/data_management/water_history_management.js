@@ -6,9 +6,8 @@ var thingSpeak = require('../data_management/thing_speak')
 
 var waterConsumptionHistory = schema.WaterConsumptionHistory
 var queryCropUserId = cropUserManagement.queryCropUserId
-var thingSpeakQueue = thingSpeak.thingSpeakQueue
+var field4Queue = thingSpeak.field4Queue
 var cb
-var field4 = ''
 
 exports.createWaterHistory = function (waterData, callback){
     cb = callback
@@ -31,8 +30,6 @@ exports.createWaterHistory = function (waterData, callback){
             cb(err)
         }
     });
-
-    pushThingSpeakTask()
 }
 
 function createWaterHistoryManagement(data, cropUserId) {
@@ -41,16 +38,7 @@ function createWaterHistoryManagement(data, cropUserId) {
         return null
     }
 
-    field4 = 'field4=' + data.w.slice(0, data.w.length - 1);
+    var field4 = 'field4=' + data.w
+    field4Queue.push(field4)
     return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data.w})
-}
-
-function pushThingSpeakTask() {
-    if ('' != field4) {
-        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field4
-        // console.log(iotUrl)
-        thingSpeakQueue.push(iotUrl)
-
-        field4 = ''
-    }
 }

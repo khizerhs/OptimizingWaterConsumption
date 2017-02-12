@@ -8,9 +8,10 @@ var commonVariables = require('./common_variables')
 var SensorHistoryManagement = schema.SensorHistory
 var queryCropUserId = cropUserManagement.queryCropUserId
 var querySensorId = sensorManagement.querySensorId
-var field1 = '', field2 = '', field3 = ''
 var cb
-var thingSpeakQueue = thingSpeak.thingSpeakQueue
+var field1Queue = thingSpeak.field1Queue
+var field2Queue = thingSpeak.field2Queue
+var field3Queue = thingSpeak.field3Queue
 var topics = commonVariables.mqtt_topics
 
 exports.createSensorHistory = function(sensorType, sensorData, callback) {
@@ -42,8 +43,6 @@ exports.createSensorHistory = function(sensorType, sensorData, callback) {
             cb(err)
         } 
     })
-
-    pushThingSpeakTask()
 }
 
 function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
@@ -54,7 +53,8 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
                 return null
             }
 
-            field2 = 'field2=' + data.t.slice(0, data.t.length - 1)
+            var field2 = 'field2=' + data.t
+            field2Queue.push(field2)
             return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.t});
 
         case topics[1]:
@@ -63,7 +63,8 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
                 return null
             }
 
-            field1 = 'field1=' + data.h.slice(0, data.h.length - 1)
+            var field1 = 'field1=' + data.h
+            field1Queue.push(field1)
             return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.h});
 
         case topics[2]:
@@ -72,23 +73,12 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
                 return null
             }
 
-            field3 = 'field3=' + data.s.slice(0, data.s.length - 1)
+            var field3 = 'field3=' + data.s
+            field3Queue.push(field3)
             return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.s});
         
         default:
             cb('[exports.createSensorHistoryManagement] ' + sensorType + ' undefined');
             return null
-    }
-}
-
-function pushThingSpeakTask() {
-    if ('' != field1 && '' != field2 && '' != field3) {
-        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field1 + '&' + field2 + '&' + field3
-        // console.log(iotUrl)
-        thingSpeakQueue.push(iotUrl)
-
-        field1 = ''
-        field2 = ''
-        field3 = ''
     }
 }
