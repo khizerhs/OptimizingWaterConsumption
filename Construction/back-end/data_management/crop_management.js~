@@ -56,7 +56,7 @@ exports.delete_crop = function(req, res) {
     _id: req.params.cropId
   }, function(err, crop) {
     if (err)
-      res.send(err);
+      res.status(400).json(err);
     else
       res.json({ message: 'Crop successfully deleted' });
   });

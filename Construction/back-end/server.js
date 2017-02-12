@@ -5,7 +5,14 @@ var express = require('express'),
   bodyParser = require('body-parser');
   
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://52.35.182.188:27017/maindb'); 
+mongoose.connect('mongodb://52.35.182.188:27017/maindb', function (err, res) {
+  if (err) { 
+    console.log ('ERROR connecting to MongoDB :' + err);
+  } else {
+    console.log ('Succeeded connected to MongoDB');
+  }
+});
+
 
 //Catch uncaughtExceptions
 var response;
@@ -20,9 +27,11 @@ app.use(bodyParser.json());
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
+var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
 sensor_routes(app);
 user_routes(app);
 crop_routes(app);
+waterHistory_routes(app);
 
 app.listen(port);
 

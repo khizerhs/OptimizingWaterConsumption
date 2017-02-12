@@ -22,5 +22,7 @@
     "mqtt": "^2.3.1",
     "request": "^2.79.0"
   },
-  "scripts": { "start": "node Construction/back-end/server.js"}
+  "scripts": {
+    "start": "node Construction/back-end/server.js"
+  }
 }

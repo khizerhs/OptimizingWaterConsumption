@@ -44,7 +44,7 @@ exports.update_crop = function(req, res) {
     else if (err)
       res.status(400).json(err);
     else    
-      res.json(user);
+      res.json(crop);
   });
 };
 
