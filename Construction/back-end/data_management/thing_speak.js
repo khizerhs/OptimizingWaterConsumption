@@ -24,13 +24,13 @@ function updateThingSpeak(callback) {
             iotUrl += '&' + field4
         }
 
-        console.log(iotUrl)
-        // request.post(iotUrl, function (err, response, body) {
-        //     // console.log('IOT return status code:' + response.statusCode)
-        //     if (err) {
-        //         cb(err)
-        //     }
-        // });
+        // console.log(iotUrl)
+        request.post(iotUrl, function (err, response, body) {
+            // console.log('IOT return status code:' + response.statusCode)
+            if (err) {
+                cb(err)
+            }
+        });
     }
     
     callback();
