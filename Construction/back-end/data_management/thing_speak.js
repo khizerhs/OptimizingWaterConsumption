@@ -23,7 +23,7 @@ function updateThingSpeak(callback) {
 
             iotUrl += '&' + field4
         } else {
-            iotUrl += 'field4=0'
+            iotUrl += '&field4=0'
         }
 
         // console.log(iotUrl)
