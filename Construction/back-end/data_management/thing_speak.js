@@ -22,6 +22,8 @@ function updateThingSpeak(callback) {
             var field4 = field4Queue.shift()
 
             iotUrl += '&' + field4
+        } else {
+            iotUrl += 'field4=0'
         }
 
         // console.log(iotUrl)
