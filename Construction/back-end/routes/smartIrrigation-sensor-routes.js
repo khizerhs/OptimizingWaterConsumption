@@ -17,12 +17,12 @@ module.exports = function(app) {
 // Put MQTT consumer here temporary
 var sensorHistoryManagement = require('../data_management/sensor_history_management')
 var waterHistoryManagement = require('../data_management/water_history_management')
-var commonVariables = require('../data_management/common_variables')
+var common = require('../data_management/common')
 
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://52.35.182.188:1883')
 
-var topics = commonVariables.mqtt_topics
+var topics = common.mqtt_topics
 
 client.on('connect', function () {
   console.log("Start mqtt")

@@ -1,10 +1,10 @@
 'use strict';
-var commonVariables = require('./common_variables')
+var common = require('./common')
 
 var mongoose = require('mongoose'),
     schema = require('./schema'),
   Sensor = schema.Sensor;
-var topics = commonVariables.mqtt_topics
+var topics = common.mqtt_topics
 
 exports.list_sensors = function(req, res) {
   Sensor.find({}, function(err, sensor) {

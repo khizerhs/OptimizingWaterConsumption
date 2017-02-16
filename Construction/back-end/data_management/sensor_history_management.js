@@ -3,7 +3,7 @@ var schema = require('./schema');
 var cropUserManagement = require('../data_management/crop_user_management');
 var sensorManagement = require('../data_management/sensor_management');
 var thingSpeak = require('../data_management/thing_speak');
-var commonVariables = require('./common_variables');
+var common = require('./common');
 
 var SensorHistoryManagement = schema.SensorHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
@@ -12,7 +12,7 @@ var cb;
 var field1Queue = thingSpeak.field1Queue;
 var field2Queue = thingSpeak.field2Queue;
 var field3Queue = thingSpeak.field3Queue;
-var topics = commonVariables.mqtt_topics;
+var topics = common.mqtt_topics;
 
 exports.createSensorHistory = function(sensorType, sensorData, callback) {
     // console.log('createSensorHistory')

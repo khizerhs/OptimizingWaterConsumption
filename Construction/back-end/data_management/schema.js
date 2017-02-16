@@ -1,18 +1,19 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
+var time_offset = -8 * 60 * 60 * 1000
 
 var cropSchema = new mongoose.Schema({
   name:{ type: String,required : true},
   description:{ type: String, trim: true },
   mad:{ type: Number},
-  creation_date: {type: Date, default: Date.now}
+  creation_date: {type: Date, default: +new Date() + time_offset}
 }, { autoIndex: true });
 
 var cropStageSchema = new mongoose.Schema({
   crop_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Crop'},
   stage:{ type: String,required : true},
   crop_coefficient:{ type: String},
-  creation_date: {type: Date, default: Date.now}
+  creation_date: {type: Date, default: +new Date() + time_offset}
 }, { autoIndex: true });
 
 var userSchema = new mongoose.Schema({
@@ -46,7 +47,7 @@ var sensorHistorySchema = new mongoose.Schema({
   sensor_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Sensor'},
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   value:{ type:String , required : true},
-  creation_date: {type: Date, default: Date.now}
+  creation_date: {type: Date, default: +new Date() + time_offset}
 }, { autoIndex: true });
 
 var weatherHistorySchema = new mongoose.Schema({
@@ -56,14 +57,14 @@ var weatherHistorySchema = new mongoose.Schema({
   avg_max_temp : {type:String},
   avg_min_temp : {type:String},
   win_speed : {String},
-  creation_date: {type: Date, default: Date.now}
+  creation_date: {type: Date, default: +new Date() + time_offset}
 }, { autoIndex: true });
 
 var waterConsumptionHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   evatranspiration:{ type: String},
   water_consumption:{ type: String},
-  creation_date: {type: Date, default: Date.now}
+  creation_date: {type: Date, default: +new Date() + time_offset}
 }, { autoIndex: true });
 
 exports.Crop = mongoose.model('Crop', cropSchema);
