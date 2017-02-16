@@ -43,6 +43,8 @@ exports.createSensorHistory = function(sensorType, sensorData, callback) {
 }
 
 function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
+    var bayTime = common.getBayTime()
+
     switch (sensorType) {
         case topics[0]:
             if (!data.t) {
@@ -52,7 +54,7 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
 
             var field2 = 'field2=' + data.t;
             field2Queue.push(field2);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.t});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.t, creation_date:bayTime});
 
         case topics[1]:
             if (!data.h) {
@@ -62,7 +64,7 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
 
             var field1 = 'field1=' + data.h;
             field1Queue.push(field1);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.h});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.h, creation_date:bayTime});
 
         case topics[2]:
             if (!data.s) {
@@ -72,7 +74,7 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
 
             var field3 = 'field3=' + data.s;
             field3Queue.push(field3);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.s});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.s, creation_date:bayTime});
         
         default:
             cb('[exports.createSensorHistoryManagement] ' + sensorType + ' undefined');
