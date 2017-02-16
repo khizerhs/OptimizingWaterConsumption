@@ -15,9 +15,6 @@ var field3Queue = thingSpeak.field3Queue;
 var topics = common.mqtt_topics;
 
 exports.createSensorHistory = function(sensorType, sensorData, callback) {
-    // console.log('createSensorHistory')
-    // console.log(sensorType)
-    // console.log(sensorData)
     cb = callback;
     var data = JSON.parse(sensorData);
     var sensorId = querySensorId(sensorType), cropUserId = queryCropUserId();
