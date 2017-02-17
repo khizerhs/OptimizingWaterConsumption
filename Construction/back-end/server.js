@@ -40,7 +40,11 @@ app.listen(port);
 
 console.log('RESTful API server started on: ' + port);
 
-
+//To avoid the heroku app going to sleep :)
+var http = require("http");
+setInterval(function() {
+    http.get("https://smartfarm-sjsu.herokuapp.com/");
+}, 300000); // every 5 minutes (300000)
 
 /*// call the packages we need
 var express    = require('express');        // call express
