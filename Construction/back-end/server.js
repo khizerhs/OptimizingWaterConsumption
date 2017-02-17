@@ -8,7 +8,7 @@ var express = require('express'),
 var http = require("http");
 setInterval(function() {
 	console.log("App ping");
-    http.get("https://smartfarm-sjsu.herokuapp.com/");
+    http.get("http://smartfarm-sjsu.herokuapp.com/");
 }, 300000); // every 5 minutes (300000)
 
 mongoose.Promise = global.Promise;
