@@ -16,6 +16,8 @@
   ],
   "license": "MIT",
   "dependencies": {
+  	"htmlparser2": "^3.9.2",
+    "node-rest-client": "^2.5.0",
     "body-parser": "~1.0.1",
     "express": "~4.0.0",
     "mongoose": ">=4.1.11",
