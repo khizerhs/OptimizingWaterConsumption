@@ -3,7 +3,7 @@ var schema = require('./schema');
 var thingSpeak = require('../data_management/thing_speak');
 var cropUserManagement = require('../data_management/crop_user_management');
 var thingSpeak = require('../data_management/thing_speak');
-
+var common = require('./common');
 var waterConsumptionHistory = schema.WaterConsumptionHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
@@ -33,14 +33,15 @@ exports.createWaterHistory = function (waterData, callback){
 }
 
 function createWaterHistoryManagement(data, cropUserId) {
+	
     if (!data.w) {
         cb('[createWaterHistoryManagement] data.w does not exist')
         return null;
     }
-
+	var bayTime = common.getBayTime();
     var field4 = 'field4=' + data.w;
     field4Queue.push(field4);
-    return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data.w});
+    return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data.w, creation_date:bayTime});
 }
 
 
