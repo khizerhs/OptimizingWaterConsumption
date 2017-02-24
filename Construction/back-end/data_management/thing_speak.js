@@ -38,10 +38,10 @@ function updateThingSpeak(callback) {
     callback();
 }
 
-function wait5sec(){
+function wait3sec(){
     setTimeout(function(){
-        updateThingSpeak(wait5sec);
-    }, 5000);
+        updateThingSpeak(wait3sec);
+    }, 3000);
 }
 
-updateThingSpeak(wait5sec);
+updateThingSpeak(wait3sec);
