@@ -15,21 +15,26 @@ function updateThingSpeak(callback) {
     var queue2Length = field2Queue.length 
     var queue3Length = field3Queue.length
 
-    if (0 < queue1Length && 0 < queue2Length && 0 < queue3Length) {
-        var field1 = field1Queue.shift()
+    if (0 < queue2Length && 0 < queue3Length) {
         var field2 = field2Queue.shift()
         var field3 = field3Queue.shift()
 
-        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field1 + '&' + field2 + '&' + field3
+        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field2 + '&' + field3
+
+        if (0 < queue1Length) {
+            var field1 = field1Queue.shift()
+
+            iotUrl += '&' + field1
+        }
 
         if (0 < field4Queue.length) {
             var field4 = field4Queue.shift()
 
             iotUrl += '&' + field4
-        } else {
-            iotUrl += '&field4=0'
 
             console.log('[updateThingSpeak] Send with field4')
+        } else {
+            iotUrl += '&field4=0'
         }
 
         // console.log(iotUrl)
