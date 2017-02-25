@@ -47,8 +47,6 @@ app.listen(port);
 
 console.log('RESTful API server started on: ' + port);
 
-
-
 /*// call the packages we need
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express

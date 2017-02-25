@@ -11,37 +11,61 @@ exports.field3Queue = field3Queue
 exports.field4Queue = field4Queue
 
 function updateThingSpeak(callback) {
-    if (0 < field1Queue.length && 0 < field2Queue.length && 0 < field3Queue.length) {
-        var field1 = field1Queue.shift()
-        var field2 = field2Queue.shift()
+    var queue1Length = field1Queue.length 
+    var queue2Length = field2Queue.length 
+    var queue3Length = field3Queue.length
+
+    if (0 < queue3Length) {
         var field3 = field3Queue.shift()
 
-        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field1 + '&' + field2 + '&' + field3
+        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field3
+
+        if (0 < queue1Length) {
+            var field1 = field1Queue.shift()
+
+            iotUrl += '&' + field1
+        }
+
+        if (0 < queue2Length) {
+            var field2 = field2Queue.shift()
+
+            iotUrl += '&' + field2
+        }
 
         if (0 < field4Queue.length) {
             var field4 = field4Queue.shift()
 
             iotUrl += '&' + field4
+
+            console.log('[updateThingSpeak] Send with field4')
         } else {
             iotUrl += '&field4=0'
         }
 
         // console.log(iotUrl)
         request.post(iotUrl, function (err, response, body) {
-            // console.log('IOT return status code:' + response.statusCode)
+            console.log('[updateThingSpeak] return status code: ' + response.statusCode)
+
             if (err) {
                 cb(err)
             }
         });
+
+        console.log('[updateThingSpeak] Posted ' + iotUrl)
+    } else {
+        var sQueue1Length = queue1Length.toString()
+        var sQueue2Length = queue2Length.toString()
+        var sQueue3Length = queue3Length.toString()
+        console.log('[updateThingSpeak] Not ready. sQueue1Length: ' + sQueue1Length + ' sQueue2Length: ' + sQueue2Length + ' sQueue3Length: ' + sQueue3Length)
     }
     
     callback();
 }
 
-function wait5sec(){
+function wait3sec(){
     setTimeout(function(){
-        updateThingSpeak(wait5sec);
-    }, 5000);
+        updateThingSpeak(wait3sec);
+    }, 3000);
 }
 
-updateThingSpeak(wait5sec);
+updateThingSpeak(wait3sec);
