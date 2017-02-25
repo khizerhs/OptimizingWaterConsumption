@@ -15,23 +15,35 @@ function updateThingSpeak(callback) {
     var queue2Length = field2Queue.length 
     var queue3Length = field3Queue.length
 
+    var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB'
+
+    var readyToSend = false
+
+    if (0 < queue1Length) {
+        var field1 = field1Queue.shift()
+
+        iotUrl += '&' + field1
+
+        readyToSend = true
+    }
+
+    if (0 < queue2Length) {
+        var field2 = field2Queue.shift()
+
+        iotUrl += '&' + field2
+
+        readyToSend = true
+    }
+
     if (0 < queue3Length) {
         var field3 = field3Queue.shift()
 
-        var iotUrl = 'http://api.thingspeak.com/update?api_key=ORAYGP0SOPO0J1IB&' + field3
+        iotUrl += '&' + field3
 
-        if (0 < queue1Length) {
-            var field1 = field1Queue.shift()
-
-            iotUrl += '&' + field1
-        }
-
-        if (0 < queue2Length) {
-            var field2 = field2Queue.shift()
-
-            iotUrl += '&' + field2
-        }
-
+        readyToSend = true
+    }
+        
+    if (readyToSend) {
         if (0 < field4Queue.length) {
             var field4 = field4Queue.shift()
 
