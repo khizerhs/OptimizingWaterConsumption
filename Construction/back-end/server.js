@@ -3,7 +3,10 @@ var express = require('express'),
   port = process.env.PORT || 3000,
   mongoose = require('mongoose'),
   bodyParser = require('body-parser');
-  
+  path = require('path')
+
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 //To avoid the heroku app going to sleep :)
 var http = require("http");
 setInterval(function() {
@@ -43,6 +46,8 @@ crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
 user_dash_routes(app)
+
+
 
 app.listen(port);
 
