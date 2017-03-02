@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var moment = require('moment-timezone');
 var schema = require('./schema');
 var thingSpeak = require('../data_management/thing_speak');
 var cropUserManagement = require('../data_management/crop_user_management');
@@ -92,4 +93,37 @@ exports.delete_wch = function(req, res) {
       res.json({ message: 'Record successfully deleted' });
   });
 };
+
+
+exports.read_wch_date = function(req, res){
+if(req.query.end == undefined || req.query.end == null){
+	waterConsumptionHistory.find({
+    creation_date: {
+        $gte: moment(req.query.start, 'MM-DD-YYYY').format()
+	}
+    }, function(err, wch) {
+    if (err)
+      res.send(err);
+    else
+      res.json(wch);
+  });
+}
+else{
+waterConsumptionHistory.find({
+    creation_date: {
+        	$gte: moment(req.query.start, 'MM-DD-YYYY').tz('America/Los_Angeles').format(),
+       		$lt: moment(req.query.end, 'MM-DD-YYYY').tz('America/Los_Angeles').format()
+	}
+    }, function(err, wch) {
+    if (err)
+      res.send(err);
+    else
+      res.json(wch);
+  });
+
+}
+
+};
+
+
 
