@@ -3,9 +3,6 @@ var express = require('express'),
   port = process.env.PORT || 3000,
   mongoose = require('mongoose'),
   bodyParser = require('body-parser');
-  path = require('path')
-
-app.use(express.static(path.resolve(__dirname, 'public')));
 
 //To avoid the heroku app going to sleep :)
 var http = require("http");
@@ -39,13 +36,11 @@ var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
 var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
 var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-routes');
-var user_dash_routes = require('./routes/smartIrrigation-user-dash-routes')
 sensor_routes(app);
 user_routes(app);
 crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
-user_dash_routes(app)
 
 
 
