@@ -45,7 +45,7 @@ user_routes(app);
 crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
-user_dash_routes(app)
+user_dash_routes(app);
 
 
 
@@ -72,7 +72,7 @@ process.on('uncaughtException', function (err) {
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
+	  console.error(err.stack)
   res.status(500).send('Something broke!')
 })
 var router = express.Router();              // get an instance of the express Router

@@ -3,7 +3,17 @@ var express = require('express'),
   port = process.env.PORT || 3000,
   mongoose = require('mongoose'),
   bodyParser = require('body-parser');
-  
+  path = require('path')
+
+app.use(express.static(path.resolve(__dirname, 'public')));
+
+//To avoid the heroku app going to sleep :)
+var http = require("http");
+setInterval(function() {
+	console.log("App ping");
+    http.get("http://smartfarm-sjsu.herokuapp.com/");
+}, 300000); // every 5 minutes (300000)
+
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://52.35.182.188:27017/maindb', function (err, res) {
   if (err) { 
@@ -29,18 +39,20 @@ var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
 var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
 var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-routes');
+var user_dash_routes = require('./routes/smartIrrigation-user-dash-routes')
 sensor_routes(app);
 user_routes(app);
 crop_routes(app);
 waterHistory_routes(app);
-sensorHistory_routes(app);
+sensorHistory_routes	(app);
+user_dash_routes(app);
+
+
 
 app.listen(port);
 
 
 console.log('RESTful API server started on: ' + port);
-
-
 
 /*// call the packages we need
 var express    = require('express');        // call express
@@ -60,7 +72,7 @@ process.on('uncaughtException', function (err) {
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
+	  console.error(err.stack)
   res.status(500).send('Something broke!')
 })
 var router = express.Router();              // get an instance of the express Router

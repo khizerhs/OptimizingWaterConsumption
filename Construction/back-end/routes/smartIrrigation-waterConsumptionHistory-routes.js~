@@ -12,4 +12,7 @@ module.exports = function(app) {
     .get(smartIrrigation.read_wch)
     .put(smartIrrigation.update_wch)
     .delete(smartIrrigation.delete_wch);
+
+  app.route('/water-history-date/:fromDate')
+    .get(smartIrrigation.read_wch_date);
 };
