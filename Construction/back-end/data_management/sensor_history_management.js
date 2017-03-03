@@ -16,7 +16,6 @@ var topics = common.mqtt_topics;
 
 exports.createSensorHistory = function(sensorType, sensorData, callback) {
     cb = callback;
-    var data = JSON.parse(sensorData);
     var sensorId = querySensorId(sensorType), cropUserId = queryCropUserId();
 
     if (null == sensorId) {
@@ -29,7 +28,7 @@ exports.createSensorHistory = function(sensorType, sensorData, callback) {
         return;
     }
 
-    var sensorHistoryManagement = createSensorHistoryManagement(sensorType, data, sensorId, cropUserId);
+    var sensorHistoryManagement = createSensorHistoryManagement(sensorType, sensorData, sensorId, cropUserId);
     
     if (null == sensorHistoryManagement) {
         return;
@@ -45,36 +44,26 @@ exports.createSensorHistory = function(sensorType, sensorData, callback) {
 function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
     var bayTime = common.getBayTime()
 
+    if (!data || 0 === data.length) {
+        cb('[createSensorHistoryManagement] ' + sensorType + ' got empty string');
+        return null;
+    }
+
     switch (sensorType) {
         case topics[0]:
-            if (!data.t) {
-                cb('[createSensorHistoryManagement] data.t does not exist');
-                return null;
-            }
-
-            var field2 = 'field2=' + data.t;
+            var field2 = 'field2=' + data;
             field2Queue.push(field2);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.t, creation_date:bayTime});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data, creation_date:bayTime});
 
         case topics[1]:
-            if (!data.h) {
-                cb('[createSensorHistoryManagement] data.h does not exist');
-                return null;
-            }
-
-            var field1 = 'field1=' + data.h;
+            var field1 = 'field1=' + data;
             field1Queue.push(field1);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.h, creation_date:bayTime});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data, creation_date:bayTime});
 
         case topics[2]:
-            if (!data.s) {
-                cb('[createSensorHistoryManagement] data.s does not exist');
-                return null;
-            }
-
-            var field3 = 'field3=' + data.s;
+            var field3 = 'field3=' + data;
             field3Queue.push(field3);
-            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data.s, creation_date:bayTime});
+            return new SensorHistoryManagement({sensor_id:sensorId, crop_user_id:cropUserId, value:data, creation_date:bayTime});
         
         default:
             cb('[exports.createSensorHistoryManagement] ' + sensorType + ' undefined');

@@ -1,14 +1,11 @@
-//#include <Time.h>
-//#include <TimeLib.h>
-
 #include <Wire.h>
 #include <UnoWiFiDevEd.h>
 #include <dht.h>
 
 
-#define CONNECTOR     "rest" 
-#define SERVER_ADDR   "api.thingspeak.com"
-#define APIKEY_THINGSPEAK  "ORAYGP0SOPO0J1IB"
+//#define CONNECTOR     "rest" 
+//#define SERVER_ADDR   "api.thingspeak.com"
+//#define APIKEY_THINGSPEAK  "ORAYGP0SOPO0J1IB"
 
 #define DHTPIN 6     // what digital pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
@@ -24,11 +21,8 @@ unsigned int flowMilliLitres;
 unsigned long totalMilliLitres;
 
 unsigned long oldTime;
-
-unsigned int soilMoistureLowRange = 23;
-//float Count;
-//float SoilMoistureReading;
-
+unsigned int soilMoistureLowRange = 20;
+unsigned int waterPouringTime = 2000;
 
 void setup() {
 
@@ -62,30 +56,12 @@ void setup() {
 }
 
 void loop() {
-    CiaoData data = Ciao.read("mqtt", "lowerLimit"); 
-    if (!data.isEmpty()){
-      soilMoistureLowRange = String(data.get(2)).toInt();
-      Serial.println("Soil moisture range received: "+String(soilMoistureLowRange));
-    }
+    //Ciao.begin();
     int chk = DHT.read22(DHTPIN);
     //String uri;
     if(chk == DHTLIB_OK){
         Serial.println("Temp/Hum sensor OK,\t");
-        //String uri = "/update?api_key=";
-        //uri += APIKEY_THINGSPEAK;
-        //uri += "&field1=";
-        //uri += String(temperature);
-   
-      
         makeRequestMQTT("arduino-hum","{\"h\":\""+String(DHT.humidity,1)+"\"}");
-        //makeRequest(uri);
-    
-        //uri = "/update?api_key=";
-        //uri += APIKEY_THINGSPEAK;
-        //uri += "&field2=";
-        //uri += String(DHT.temperature,1);
-    
-        //makeRequest(uri);
         makeRequestMQTT("arduino-temp","{\"t\":\""+String(DHT.temperature,1)+"\"}");
     }
     
@@ -94,39 +70,53 @@ void loop() {
     Serial.print("Humidity: ");           
     Serial.print(String(DHT.humidity,1));
     Serial.println("%"); 
-
     Serial.print("Temperature: ");           
     Serial.print(String(DHT.temperature,1));
     Serial.println("C"); 
     
     unsigned int state = digitalReadOutputPin(SOLENOIDPIN);
     float SoilMoistureReading = readSoilMoisture();
-    totalMilliLitres = 0.0;
-
-    //uri = "/update?api_key=";
-    //uri += APIKEY_THINGSPEAK;
-    //uri += "&field3=";
-    //uri += String(SoilMoistureReading);
-    
-    //makeRequest(uri);
     makeRequestMQTT("arduino-soil","{\"s\":\""+String(SoilMoistureReading)+"\"}");
+    totalMilliLitres = 0.0;
+    //***************************************************////
+    //************GET USER PARAMETERS****************///
+    //***************************************************///
+    //Get the soil moisture lowerLimit
+    String message = getMessageMQTT("lowerLimit");
+    if(message != ""){
+      soilMoistureLowRange = message.toInt();
+    }
+    //Publish the current soil moisture lower range
+    makeRequestMQTT("currentLowerLimit",String(soilMoistureLowRange));
+    //Get the pouring time
+    message = getMessageMQTT("pouringTime");
+    if(message != ""){
+      waterPouringTime = message.toInt();
+    }
+    //Publish the current pouring time
+    makeRequestMQTT("currentPouringTime",String(waterPouringTime));
+    //***************************************************////
+    //************GET USER PARAMETERS****************///
+    //***************************************************///
 
-    
     
     Serial.println("Soil moisture range limit: "+String(soilMoistureLowRange));
-    //Serial.println("State: "+state);
+    Serial.println("Current pouring time: "+String(waterPouringTime));
+    
     while(SoilMoistureReading > 0 && SoilMoistureReading < soilMoistureLowRange && SoilMoistureReading < 45){
         state = digitalReadOutputPin(SOLENOIDPIN);
         if(state == LOW){
           digitalWrite(SOLENOIDPIN, HIGH);
           Serial.println("Valve opened!!!");
         }
-        //Delay 2 seconds
+        //Pour water during water pouring time
         unsigned long oldTime = millis();
-        while(millis() - oldTime < 2000){   
+        while(millis() - oldTime < waterPouringTime){   
           calculateFlow();
         }
+        delay(60000); // delay 1 minute to allow the water poured reach the soil moisture sensor
         SoilMoistureReading = readSoilMoisture();
+        makeRequestMQTT("arduino-soil","{\"s\":\""+String(SoilMoistureReading)+"\"}");
     }
     
     state = digitalReadOutputPin(SOLENOIDPIN);
@@ -138,27 +128,15 @@ void loop() {
       Serial.print(totalMilliLitres);
       Serial.println("mL"); 
     }
-    /*
-    uri = "/update?api_key=";
-    uri += APIKEY_THINGSPEAK;
-    uri += "&field3=";
-    uri += String(SoilMoistureReading);
     
-    makeRequest(uri);
-    */
     if(totalMilliLitres > 0){
-      //uri = "/update?api_key=";
-      //uri += APIKEY_THINGSPEAK;
-      //uri += "&field4=";
-      //uri += String(totalMilliLitres);
-      //makeRequest(uri);
       makeRequestMQTT("arduino-water","{\"w\":\""+String(totalMilliLitres)+"\"}");
     }
     delay(5000); // Thinkspeak policy
 
 }
 
-
+/*
 void makeRequest(String dataRequest){
     //Ciao.print("Sending request to thingspeak ");
     Serial.println(dataRequest);
@@ -175,7 +153,7 @@ void makeRequest(String dataRequest){
     else{ 
       Ciao.println("Write Error");
     }    
-}
+}*/
 
 void makeRequestMQTT(char* topic, String dataRequest){
     //Ciao.print("Sending request to thingspeak ");
@@ -193,6 +171,16 @@ void makeRequestMQTT(char* topic, String dataRequest){
     else{ 
       Ciao.println("Write Error");
     }    
+}
+
+String getMessageMQTT(char* topic){
+  CiaoData data = Ciao.read("mqtt", topic); 
+  if (!data.isEmpty()){
+    Serial.println("Data received"+String(data.get(2)));
+    return String(data.get(2));
+  }
+
+  return "";
 }
 
 float readSoilMoisture(){
