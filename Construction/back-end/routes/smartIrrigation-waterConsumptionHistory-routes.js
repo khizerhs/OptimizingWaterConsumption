@@ -1,7 +1,7 @@
 'use strict';
 module.exports = function(app) {
   var smartIrrigation = require('../data_management/water_history_management');
-
+  var user_application_logic = require('../logic/user_application_logic');
 
   app.route('/water-history')
     .get(function(req,res){
@@ -18,7 +18,22 @@ module.exports = function(app) {
 		
 	});
 	
-	(smartIrrigation.list_wchs);
+	app.route('/water-history/total_consumption')
+    .get(function(req,res){
+		var query = {
+			start: req.param('start'),
+			end : req.param('end')
+		}
+		user_application_logic.getTotalWaterConsumption(query,function(err,total){
+			if (err)
+			  res.status(500).send(err);
+			else
+			  res.status(200).json(total);
+		});
+		
+	});
+	
+	//(smartIrrigation.list_wchs);
     //.post(smartIrrigation.create_crop);
 
 

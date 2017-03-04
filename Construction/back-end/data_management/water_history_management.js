@@ -45,9 +45,9 @@ function createWaterHistoryManagement(data, cropUserId) {
 }
 
 
-// WaterConsumptionHistory REST API
 
 exports.list_wchs = function(query, callback) {
+  var time_offset = -8 * 60 * 60 * 1000
   if(JSON.stringify(query) == '{}'){
 	  console.log("No params");
 	  waterConsumptionHistory.find({}, function(err, wch) {
@@ -60,7 +60,7 @@ exports.list_wchs = function(query, callback) {
 	  if(query.end == undefined || query.end == null){
 		waterConsumptionHistory.find({
 			creation_date: {
-				$gte: moment(query.start, 'MM-DD-YYYY').format()
+				$gte: moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format()
 			}
 			}, function(err, wch) {
 			if (err)
@@ -69,10 +69,12 @@ exports.list_wchs = function(query, callback) {
 			  callback(err,wch);
 		});
 	  }else{
+		  console.log("Date begin: "+moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format())
+		  console.log("Date end: "+moment(query.end, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format())
 		  waterConsumptionHistory.find({
 			creation_date: {
-					$gte: moment(query.start, 'MM-DD-YYYY').tz('America/Los_Angeles').format(),
-					$lt: moment(query.end, 'MM-DD-YYYY').tz('America/Los_Angeles').format()
+					$gte: moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format(),
+					$lt: moment(query.end, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format()
 			}
 			}, function(err, wch) {
 			if (err)
