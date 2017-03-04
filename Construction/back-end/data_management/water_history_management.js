@@ -47,13 +47,41 @@ function createWaterHistoryManagement(data, cropUserId) {
 
 // WaterConsumptionHistory REST API
 
-exports.list_wchs = function(req, res) {
-  waterConsumptionHistory.find({}, function(err, wch) {
-    if (err)
-      res.send(err);
-    else
-      res.json(wch);
-  });
+exports.list_wchs = function(query, callback) {
+  if(JSON.stringify(query) == '{}'){
+	  console.log("No params");
+	  waterConsumptionHistory.find({}, function(err, wch) {
+		if (err)
+		  callback(err,null);
+		else
+		  callback(null,wch);
+	  });
+  }else{
+	  if(query.end == undefined || query.end == null){
+		waterConsumptionHistory.find({
+			creation_date: {
+				$gte: moment(query.start, 'MM-DD-YYYY').format()
+			}
+			}, function(err, wch) {
+			if (err)
+			  callback(err,null);
+			else
+			  callback(err,wch);
+		});
+	  }else{
+		  waterConsumptionHistory.find({
+			creation_date: {
+					$gte: moment(query.start, 'MM-DD-YYYY').tz('America/Los_Angeles').format(),
+					$lt: moment(query.end, 'MM-DD-YYYY').tz('America/Los_Angeles').format()
+			}
+			}, function(err, wch) {
+			if (err)
+			  callback(err,null);
+			else
+			  callback(err,wch);
+		});
+	  }
+  }
 };
 
 
@@ -105,7 +133,7 @@ if(req.query.end == undefined || req.query.end == null){
       res.send(err);
     else
       res.json(wch);
-  });
+	});
 }
 else{
 waterConsumptionHistory.find({

@@ -4,7 +4,21 @@ module.exports = function(app) {
 
 
   app.route('/water-history')
-    .get(smartIrrigation.list_wchs);
+    .get(function(req,res){
+		var query = {
+			start: req.param('start'),
+			end : req.param('end')
+		}
+		smartIrrigation.list_wchs(query,function(err,wch){
+			if (err)
+			  res.send(err);
+			else
+			  res.json(wch);
+		});
+		
+	});
+	
+	(smartIrrigation.list_wchs);
     //.post(smartIrrigation.create_crop);
 
 
