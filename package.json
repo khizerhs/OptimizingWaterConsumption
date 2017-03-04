@@ -16,13 +16,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-<<<<<<< HEAD
-=======
-  	"htmlparser2": "^3.9.2",
-    "moment": "^2.17.1",
-    "moment-timezone": "^0.5.11",
-    "node-rest-client": "^2.5.0",
->>>>>>> 8ac51ded1c50f144f7ab5e98b9f463293a1fc10a
     "body-parser": "~1.0.1",
     "express": "~4.0.0",
     "htmlparser2": "^3.9.2",

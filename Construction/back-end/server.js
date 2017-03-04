@@ -41,10 +41,7 @@ user_routes(app);
 crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
-<<<<<<< HEAD
-user_dash_routes(app);
-=======
->>>>>>> 8ac51ded1c50f144f7ab5e98b9f463293a1fc10a
+
 
 
 
