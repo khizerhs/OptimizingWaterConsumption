@@ -57,6 +57,7 @@ exports.list_wchs = function(query, callback) {
 		  callback(null,wch);
 	  });
   }else{
+	  
 	  if(query.end == undefined || query.end == null){
 		waterConsumptionHistory.find({
 			creation_date: {
