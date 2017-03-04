@@ -19,7 +19,7 @@ module.exports = function(app) {
 		
 	});
 	
-	app.route('/water-history/total_consumption')
+	app.route('/water-history/total-consumption')
     .get(function(req,res){
 		var query = {
 			start: req.param('start'),
