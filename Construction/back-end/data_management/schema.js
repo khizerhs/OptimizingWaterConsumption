@@ -4,7 +4,6 @@ var Schema       = mongoose.Schema;
 var cropSchema = new mongoose.Schema({
   name:{ type: String,required : true},
   description:{ type: String, trim: true },
-  mad:{ type: Number},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
@@ -33,13 +32,13 @@ var sensorSchema = new mongoose.Schema({
 var cropUserSchema = new mongoose.Schema({
   crop_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Crop'},
   user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'User'},
-  sensor_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Sensor'},
   name:{ type: String,required : true},
   description:{ type: String, trim: true },
   stage : {type: String},
   field_size: { type: String, required : true},
   field_capacity: { type: String, required : true},
-  mad : { type: String, required : true}
+  mad : { type: String, required : true},
+  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
 }, { autoIndex: true });
 
 var sensorHistorySchema = new mongoose.Schema({
