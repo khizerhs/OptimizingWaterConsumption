@@ -10,7 +10,7 @@ exports.queryCropUserId = function (req, res) {
 exports.get_crop_user = function (req, res) {
     var id = req.params.userId
 
-    cropUserManagement.findOne({user_id: id}, function(err, user) {
+    cropUserManagement.find({user_id: id}, function(err, user) {
       if (user == undefined || user == null) {
         res.status(404).send()
       } else if (err) {
