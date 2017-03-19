@@ -4,7 +4,7 @@ var schema = require('./schema');
 var cropUserManagement = schema.CropUser;
 
 exports.queryCropUserId = function (req, res) {
-    return mongoose.Types.ObjectId("589d54a5055013627647c9e7")
+    return mongoose.Types.ObjectId("58caea3116a1664e9fdb71d7")
 }
 
 exports.get_crop_user = function (req, res) {
