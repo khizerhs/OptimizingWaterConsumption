@@ -28,6 +28,12 @@
     "request": "^2.79.0"
   },
   "scripts": {
-    "start": "node Construction/back-end/server.js"
+    "start": "node Construction/back-end/server.js",
+    "test": "mocha --timeout 10000"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }

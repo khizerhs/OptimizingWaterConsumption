@@ -52,5 +52,5 @@ crop_user_routes(app);
 
 app.listen(port);
 
-
+module.exports = app
 console.log('RESTful API server started on: ' + port);
