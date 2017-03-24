@@ -95,4 +95,19 @@ exports.read_sensor_history = function(req, res) {
   });
 };
 
+exports.read_sensor_history_user = function(req, res) {
+  var last = parseInt(req.params.last)
+  if (last > 20) {
+    last = 20
+  }
+
+  SensorHistoryManagement.find({sensor_id: req.params.sensorId, crop_user_id: req.params.cropUserId}, function(err, sensorHistory) {
+    if (sensorHistory == undefined || sensorHistory == null)
+      res.status(404).json({message: 'read_sensor_history_user record Not found'});
+    else if (err)
+      res.send(err);
+    else
+      res.json(sensorHistory);
+  }).sort({$natural: -1}).limit(last)
+};
 

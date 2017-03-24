@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  "6"
+deploy:
+  provider: heroku
+  api_key:
+    secure: "615d546a-cb4c-47a1-a072-12f634edca29"
+  app:
+    master: smartfarmsjsu2017

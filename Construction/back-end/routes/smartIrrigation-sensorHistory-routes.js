@@ -13,5 +13,7 @@ module.exports = function(app) {
 
 //    .put(smartIrrigation.update_sh)
 //    .delete(smartIrrigation.delete_sh);
+  app.route('/sensor-history-user/:sensorId/:cropUserId/:last')
+    .get(smartIrrigation.read_sensor_history_user);
 
 };

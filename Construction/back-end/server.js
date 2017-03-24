@@ -2,7 +2,8 @@ var express = require('express'),
   app = express(),
   port = process.env.PORT || 3000,
   mongoose = require('mongoose'),
-  bodyParser = require('body-parser');
+  bodyParser = require('body-parser'),
+  cors = require('cors');
 
 //To avoid the heroku app going to sleep :)
 var http = require("http");
@@ -30,22 +31,26 @@ process.on('uncaughtException', function (err) {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
 var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
 var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-routes');
+var crop_user_routes = require('./routes/smartIrrigation-crop-user-routes');
+
 sensor_routes(app);
 user_routes(app);
 crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
+crop_user_routes(app);
 
 
 
 
 app.listen(port);
 
-
+module.exports = app
 console.log('RESTful API server started on: ' + port);

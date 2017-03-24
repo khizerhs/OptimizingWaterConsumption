@@ -63,7 +63,27 @@ exports.delete_user = function(req, res) {
   });
 };
 
+exports.login_user = function(req, res) {
+  if (undefined === req.body.name || undefined === req.body.password ) {
+    res.status(400).send('')
+  } else {
+    console.log('login user: ' + req.body.name)
 
+    User.findOne({login: req.body.name}, function(err, user) {
+      if (user == undefined || user == null)
+        res.status(404).send()
+      else if (err)
+        res.send(err)
+      else {
+        if (req.body.password != user.pass) {
+          res.status(406).send()
+        } else {
+          res.status(200).send(user)
+        }
+      }
+    });
+  }  
+}
 
 /*
 var schema = require('./schema');

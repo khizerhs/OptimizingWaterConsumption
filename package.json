@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "~1.0.1",
+    "cors": "^2.8.1",
     "express": "~4.0.0",
     "htmlparser2": "^3.9.2",
     "moment": "^2.17.1",
@@ -27,6 +28,12 @@
     "request": "^2.79.0"
   },
   "scripts": {
-    "start": "node Construction/back-end/server.js"
+    "start": "node Construction/back-end/server.js",
+    "test": "mocha --timeout 10000"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.2.0"
   }
 }
