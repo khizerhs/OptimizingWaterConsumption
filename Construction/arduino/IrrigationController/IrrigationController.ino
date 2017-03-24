@@ -2,7 +2,6 @@
 #include <UnoWiFiDevEd.h>
 #include <dht.h>
 
-
 //#define CONNECTOR     "rest" 
 //#define SERVER_ADDR   "api.thingspeak.com"
 //#define APIKEY_THINGSPEAK  "ORAYGP0SOPO0J1IB"
