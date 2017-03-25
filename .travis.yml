@@ -7,3 +7,10 @@ deploy:
     secure: "615d546a-cb4c-47a1-a072-12f634edca29"
   app:
     master: sjsusmartfarm-backend
+
+notifications:
+  email:
+    cywu1031@gmail.com
+    saishashank.vadali@sjsu.edu
+    khizerhasan.syed@sjsu.edu
+    fabrizio.pisciottasanabria@sjsu.edu
