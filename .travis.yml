@@ -10,7 +10,8 @@ deploy:
 
 notifications:
   email:
-    - cywu1031@gmail.com
-    - saishashank.vadali@sjsu.edu
-    - khizerhasan.syed@sjsu.edu
-    - fabrizio.pisciottasanabria@sjsu.edu
+    recipients:
+      - cywu1031@gmail.com
+      - saishashank.vadali@sjsu.edu
+      - khizerhasan.syed@sjsu.edu
+      - fabrizio.pisciottasanabria@sjsu.edu
