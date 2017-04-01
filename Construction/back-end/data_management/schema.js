@@ -52,14 +52,13 @@ var weatherHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   precipitation : { type: String},
   solar_radiation:{ type: String},
-  soil_heat_flux_density:{type:String},
-  saturation_vapor_pressure:{type:String},
-  actual_vapor_pressure:{type:String},
-  delta:{type:String},
-  gamma:{type:String},
-  avg_max_temp : {type:String},
-  avg_min_temp : {type:String},
-  win_speed : {String},
+  vapor_pressure:{type:String},
+  air_temperature:{type:String},
+  relative_humidity:{type:String},
+  dew_point:{type:String},
+  wind_speed:{type:String},
+  wind_direction: {type:String},
+  soil_temperature: {String},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
@@ -67,6 +66,20 @@ var waterConsumptionHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   evatranspiration:{ type: String},
   water_consumption:{ type: String},
+  creation_date: {type: Date, default: Date.now}
+}, { autoIndex: true });
+
+var sensorHistorySchema = new mongoose.Schema({
+  sensor_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Sensor'},
+  crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
+  value:{ type:String , required : true},
+  creation_date: {type: Date, default: Date.now}
+}, { autoIndex: true });
+
+var machineLearningModuleSchema = new mongoose.Schema({
+  crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
+  coeffs:{ type:String , required : true},
+  variance_score:{ type:String , required : true},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
