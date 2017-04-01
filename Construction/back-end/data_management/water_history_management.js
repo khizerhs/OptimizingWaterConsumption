@@ -61,7 +61,7 @@ exports.list_wchs = function(query, callback) {
 	  if(query.end == undefined || query.end == null){
 		waterConsumptionHistory.find({
 			creation_date: {
-				$gte: moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format()
+				$gte: moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format()
 			}
 			}, function(err, wch) {
 			if (err)
@@ -70,12 +70,12 @@ exports.list_wchs = function(query, callback) {
 			  callback(err,wch);
 		});
 	  }else{
-		  console.log("Date begin: "+moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format())
-		  console.log("Date end: "+moment(query.end, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format())
+		  console.log("Date begin: "+moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format())
+		  console.log("Date end: "+moment(query.end, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format())
 		  waterConsumptionHistory.find({
 			creation_date: {
-					$gte: moment(query.start, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format(),
-					$lt: moment(query.end, 'MM-DD-YYYY HH:mm').utcOffset("-0800").format()
+					$gte: moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format(),
+					$lt: moment(query.end, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format()
 			}
 			}, function(err, wch) {
 			if (err)
