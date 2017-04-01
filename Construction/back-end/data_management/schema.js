@@ -76,7 +76,7 @@ var sensorHistorySchema = new mongoose.Schema({
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
-var machineLearningModuleSchema = new mongoose.Schema({
+var machineLearningSchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   coeffs:{ type:String , required : true},
   variance_score:{ type:String , required : true},
@@ -91,3 +91,4 @@ exports.CropUser = mongoose.model('CropUser', cropUserSchema);
 exports.SensorHistory = mongoose.model('SensorHistory', sensorHistorySchema);
 exports.WaterConsumptionHistory = mongoose.model('WaterConsumption', waterConsumptionHistorySchema);
 exports.WeatherHistory= mongoose.model('WeatherHistory', cropSchema);
+exports.machineLearning = mongoose.model('MachineLearning', machineLearningSchema);
