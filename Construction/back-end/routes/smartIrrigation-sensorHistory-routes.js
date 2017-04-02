@@ -16,4 +16,6 @@ module.exports = function(app) {
   app.route('/sensor-history-user/:sensorId/:cropUserId/:last')
     .get(smartIrrigation.read_sensor_history_user);
 
+  app.route('/sensor-history-range/:sensorId/:cropUserId/:start/:end')
+    .get(smartIrrigation.read_sensor_history_range);
 };
