@@ -4,5 +4,6 @@ module.exports = function(app) {
 
 
   app.route('/crop-user/:userId')
-    .get(smartIrrigation.get_crop_user);
+    .get(smartIrrigation.get_crop_user)
+    .put(smartIrrigation.update_crop_user);
 };
