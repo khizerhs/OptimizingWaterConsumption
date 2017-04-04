@@ -20,3 +20,14 @@ exports.get_crop_user = function (req, res) {
       }
     });
 }
+
+exports.update_crop_user = function (req, res) {
+  cropUserManagement.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, crop_user) {
+    if (crop_user == undefined || crop_user == null)
+      res.status(404).json({message: 'crop_user Not found'});
+    else if (err)
+      res.status(400).json(err);
+    else    
+      res.json(crop_user);
+  });
+}
