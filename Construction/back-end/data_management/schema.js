@@ -81,6 +81,8 @@ var machineLearningSchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   coeffs:{ type:String , required : true},
   variance_score:{ type:String , required : true},
+  features_min:{ type:String , required : true},
+  features_max:{ type:String , required : true},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
