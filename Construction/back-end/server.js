@@ -31,7 +31,28 @@ process.on('uncaughtException', function (err) {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+app.configure(function () {
+  app.use(allowCrossDomain);
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(path.join(application_root, "public")));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+//app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
