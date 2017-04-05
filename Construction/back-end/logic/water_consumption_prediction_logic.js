@@ -36,25 +36,59 @@ function getWeatherInfo (callback){
     var date=new Date();
     var now=date.toLocaleDateString('en-US').replace(new RegExp('/','g'),'-');
     console.log(now);
-    client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+	
+	
+   callCimisApi(now, function(err,data){
         //console.log("Response"+JSON.stringify(data));
+		if(err)
+			return callback(err,null );
+		
 		var records=data.Data.Providers[0].Records;
-		var his = records[0];
-        //var his=records[(parseInt(sun_rhours))];
-		console.log(JSON.stringify(his));
-		var WeatherRecord={
-		  precipitation : his.HlyPrecip.Value,
-		  solar_radiation:his.HlyNetRad.Value,
-		  vapor_pressure:his.HlyVapPres.Value,
-		  air_temperature:his.HlyAirTmp.Value,
-		  relative_humidity:his.HlyRelHum.Value,
-		  dew_point:his.HlyDewPnt.Value,
-		  wind_speed:his.HlyWindSpd.Value,
-		  wind_direction: his.HlyWindDir.Value,
-		  soil_temperature: his.HlySoilTmp.Value
+		//Peak hour or the hottest time during the day is at three p.m. during the day
+		var his = records[14];
+		
+		if(his.HlyPrecip.Value == 'null'){
+			console.log("Getting data from yesterday")
+			var yesterday = new Date(date.getTime());
+			yesterday.setDate(date.getDate() - 1);
+			callCimisApi(yesterday, function(err,data){
+				if(err)
+					return callback(err,null );
+				records=data.Data.Providers[0].Records;
+				//Peak hour or the hottest time during the day is at three p.m. during the day
+				var his = records[14];
+				console.log(JSON.stringify(his));
+				console.log(JSON.stringify(his));
+				var weatherRecord={
+				  precipitation : his.HlyPrecip.Value,
+				  solar_radiation:his.HlyNetRad.Value,
+				  vapor_pressure:his.HlyVapPres.Value,
+				  air_temperature:his.HlyAirTmp.Value,
+				  relative_humidity:his.HlyRelHum.Value,
+				  dew_point:his.HlyDewPnt.Value,
+				  wind_speed:his.HlyWindSpd.Value,
+				  wind_direction: his.HlyWindDir.Value,
+				  soil_temperature: his.HlySoilTmp.Value
+				}
+				callback(err,weatherRecord)
+			})
+		}else{
+			console.log(JSON.stringify(his));
+			var weatherRecord={
+			  precipitation : his.HlyPrecip.Value,
+			  solar_radiation:his.HlyNetRad.Value,
+			  vapor_pressure:his.HlyVapPres.Value,
+			  air_temperature:his.HlyAirTmp.Value,
+			  relative_humidity:his.HlyRelHum.Value,
+			  dew_point:his.HlyDewPnt.Value,
+			  wind_speed:his.HlyWindSpd.Value,
+			  wind_direction: his.HlyWindDir.Value,
+			  soil_temperature: his.HlySoilTmp.Value
+			}
+			callback(err,weatherRecord)
 		};
 		
-		callback(WeatherRecord);
+		
     });
 }
 //Method that calculates the future water water consumption
@@ -67,8 +101,10 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 		if(err)
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory == null){
-			getWeatherInfo(function(weather_data){		
+			getWeatherInfo(function(err,weather_data){		
 				console.log(JSON.stringify(weather_data));
+				if(err)
+						return callback(err,null);
 				weatherHistoryManagement.getMachineLearningModel(function(err,model){		
 					
 					if(err)
@@ -122,6 +158,20 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 			callback(err,weatherHistory.prediction)
 		}
 	
+	})
+}
+
+function callCimisApi(now,callback){
+	var date=new Date();
+    var now=date.toLocaleDateString('en-US').replace(new RegExp('/','g'),'-');
+    console.log(now);
+    client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+		if(data == 'undefined')
+			return callback(new Error("Weather station data not provided"),null );
+		else if(typeof data.Data.Providers[0] == 'undefined')
+			return callback(new Error("Weather station data not provided"),null );
+		
+		callback(null,data);
 	})
 }
 
