@@ -82,8 +82,9 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						for(var key in weather_data){	 
 							weather_record.push(weather_data[key]);
 						}
+						var acreage = 428
 						//Include acreage into the weather_record
-						weather_record.unshift(428)
+						weather_record.unshift(acreage)
 						//weather_record = weather_record.slice(2,weather_record.length);
 						console.log("Weather data: "+weather_record);
 						var result = []
@@ -106,8 +107,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 								else{
 									//Return the prediction in liters in one day
 									console.log(JSON.stringify(cropUser))
-									var acreage = 416 //hardcoded for now, should be stored in the database
-									predictionToLitersInOneDay = (prediction/416)/0.035315*cropUser.field_size*24
+									predictionToLitersInOneDay = (prediction/acreage)/0.035315*cropUser.field_size*24
 									callback(err,{prediction : predictionToLitersInOneDay});
 								}
 							})
