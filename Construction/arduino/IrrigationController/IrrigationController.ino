@@ -122,6 +122,11 @@ void loop() {
           Serial.println("mL"); 
         }
         SoilMoistureReading = getAverageReading();
+
+        Serial.println("Temp/Hum sensor OK,\t");
+        makeRequestMQTT("arduino-hum",String(DHT.humidity,1));
+        makeRequestMQTT("arduino-temp",String(DHT.temperature));
+    
         makeRequestMQTT("arduino-soil",String(SoilMoistureReading));
     }
     
