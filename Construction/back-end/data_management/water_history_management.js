@@ -47,7 +47,7 @@ function createWaterHistoryManagement(data, cropUserId) {
 
 
 exports.list_wchs = function(query, callback) {
-  var time_offset = -8 * 60 * 60 * 1000
+  var time_offset = -7 * 60 * 60 * 1000
   if(JSON.stringify(query) == '{}'){
 	  console.log("No params");
 	  waterConsumptionHistory.find({}, function(err, wch) {

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var schema = require('./schema');
 
-var cropUserManagement = schema.CropUser;
+var CropUser = schema.CropUser;
 
 exports.queryCropUserId = function (req, res) {
     return mongoose.Types.ObjectId("58caea3116a1664e9fdb71d7")
@@ -10,7 +10,7 @@ exports.queryCropUserId = function (req, res) {
 exports.get_crop_user = function (req, res) {
     var id = req.params.userId
 
-    cropUserManagement.find({user_id: id}, function(err, user) {
+    CropUser.find({user_id: id}, function(err, user) {
       if (user == undefined || user == null) {
         res.status(404).send()
       } else if (err) {
@@ -21,8 +21,14 @@ exports.get_crop_user = function (req, res) {
     });
 }
 
+exports.getCropUser = function (query, callback){
+	CropUser.findOne(query, function(err, cropUser) {
+      callback(err,cropUser);
+    });
+}
+
 exports.update_crop_user = function (req, res) {
-  cropUserManagement.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, crop_user) {
+  CropUser.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, crop_user) {
     if (crop_user == undefined || crop_user == null)
       res.status(404).json({message: 'crop_user Not found'});
     else if (err)

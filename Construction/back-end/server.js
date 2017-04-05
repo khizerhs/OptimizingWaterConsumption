@@ -37,7 +37,7 @@ var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
 var crop_routes = require('./routes/smartIrrigation-crop-routes');
 var waterHistory_routes = require('./routes/smartIrrigation-waterConsumptionHistory-routes');
-var weatherHistory_routes = require('./routes/smartIrrigation-weatherHistory-routes');
+var waterConsumptionPrediction_routes = require('./routes/smartIrrigation-waterConsumptionPrediction-routes');
 var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-routes');
 var crop_user_routes = require('./routes/smartIrrigation-crop-user-routes');
 
@@ -47,7 +47,7 @@ crop_routes(app);
 waterHistory_routes(app);
 sensorHistory_routes(app);
 crop_user_routes(app);
-weatherHistory_routes(app);
+waterConsumptionPrediction_routes(app);
 
 
 

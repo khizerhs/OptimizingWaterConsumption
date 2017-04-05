@@ -87,3 +87,15 @@ Expected Output:
     Status Code: 200 OK
     Response Body:
     [{"_id":"58998a410494c5379542d348","name":"temperature","description":"test","__v":0}]
+
+## Water consumption machine learning
+### Prediction 
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX
+
+Expected Output:
+
+    Status Code: 200 OK
+    Response Body:
+    {
+		"prediction": 0.18632683154658497
+	}
