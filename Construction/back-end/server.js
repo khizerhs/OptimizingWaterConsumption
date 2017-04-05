@@ -44,14 +44,10 @@ var allowCrossDomain = function(req, res, next) {
       next();
     }
 };
-app.configure(function () {
-  app.use(allowCrossDomain);
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(path.join(application_root, "public")));
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+
+app.use(allowCrossDomain);
+
+
 //app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
