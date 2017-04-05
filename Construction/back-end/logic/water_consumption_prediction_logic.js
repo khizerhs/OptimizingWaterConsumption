@@ -82,6 +82,8 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						for(var key in weather_data){	 
 							weather_record.push(weather_data[key]);
 						}
+						//Include acreage into the weather_record
+						weather_record.unshift(428)
 						//weather_record = weather_record.slice(2,weather_record.length);
 						console.log("Weather data: "+weather_record);
 						var result = []
