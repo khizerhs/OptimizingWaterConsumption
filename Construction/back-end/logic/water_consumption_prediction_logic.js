@@ -42,7 +42,6 @@ function getWeatherInfo (callback){
 		var his = records[0];
         //var his=records[(parseInt(sun_rhours))];
 		console.log(JSON.stringify(his));
-        
 		var WeatherRecord={
 		  precipitation : his.HlyPrecip.Value,
 		  solar_radiation:his.HlyNetRad.Value,
