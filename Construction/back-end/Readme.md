@@ -90,12 +90,12 @@ Expected Output:
 
 ## Water consumption machine learning
 ### Prediction 
-    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=2017-04-04
 
 Expected Output:
 
     Status Code: 200 OK
     Response Body:
     {
-		"prediction": 0.18632683154658497
+		"prediction": 186.32683154658497 //in mililiters
 	}
