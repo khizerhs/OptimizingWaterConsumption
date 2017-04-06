@@ -35,7 +35,7 @@ function getSunRiseInfo(){
 
 function getWeatherInfo (date, callback){
     
-	var now = moment(date).tz('America/Los_Angeles').format('YYYY-MM-DD');
+	var now = moment(date).format('YYYY-MM-DD');
     console.log(now);
 	
    callCimisApi(now, function(err,data){
@@ -94,9 +94,9 @@ function getWeatherInfo (date, callback){
 //Method that calculates the future water water consumption
 exports.getWaterConsumptionPrediction = function(query,callback){
 	var date = new Date(query.date);
-	var startDate = moment(date).tz('America/Los_Angeles')
+	var startDate = moment(date)
     .set({ hour: 0, minute: 0 });
-	var endDate = moment(date).tz('America/Los_Angeles')
+	var endDate = moment(date)
     .set({ hour: 23, minute: 59 });
 	weatherHistoryManagement.getWeatherHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
