@@ -45,10 +45,8 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 
-app.use(allowCrossDomain);
-
-
-//app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
+//app.use(allowCrossDomain);
+app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
