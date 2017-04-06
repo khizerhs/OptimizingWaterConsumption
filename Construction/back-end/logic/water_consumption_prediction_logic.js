@@ -34,10 +34,9 @@ function getSunRiseInfo(){
 }
 
 function getWeatherInfo (callback){
-    var date=new Date();
-    var now=date.toLocaleDateString('en-US').replace(new RegExp('/','g'),'-');
+    
+	var now = moment(new Date()).tz('America/Los_Angeles').format('YYYY-MM-DD');
     console.log(now);
-	
 	
    callCimisApi(now, function(err,data){
         //console.log("Response"+JSON.stringify(data));
@@ -179,23 +178,6 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 }
 
 function callCimisApi(now,callback){
-	var date=new Date();
-    var now=date.toLocaleDateString('en-US').replace(new RegExp('/','g'),'-');
-    console.log(now);
-	
-	/* request.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp",function(err,res,body){
-	  if(err) callback(err,null)
-	  if(res.statusCode !== 200 ){
-		if(body == 'undefined')
-			return callback(new Error("Weather station data not provided"),null );
-		else if(typeof body.Data == 'undefined')
-			return callback(new Error("Weather station data not provided"),null );
-		
-		callback(null,body);
-	  } 
-	}); */
-	
-	
     client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
 		console.log("Response"+JSON.stringify(data))
 		if(data == 'undefined')
