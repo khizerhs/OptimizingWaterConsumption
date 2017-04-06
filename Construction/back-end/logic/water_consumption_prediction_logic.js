@@ -1,4 +1,5 @@
 var math = require('mathjs');
+var request=require('request');
 var Client = require('node-rest-client').Client;
 var CronJob = require('cron').CronJob;
 var moment = require('moment-timezone');
@@ -16,7 +17,7 @@ var getSunR = new CronJob({
 });
 getSunR.start();
 
-function getSunRiseInfo(){
+function getSunRiseInfo(){	
     client.get("http://api.wunderground.com/api/90e662793af1aa07/conditions/astronomy/q/CA/San_Jose.json", function (data, response) {
     sun_rhours=data.sun_phase.sunrise.hour;
     sun_rmin=data.sun_phase.sunrise.minute;
@@ -181,14 +182,28 @@ function callCimisApi(now,callback){
 	var date=new Date();
     var now=date.toLocaleDateString('en-US').replace(new RegExp('/','g'),'-');
     console.log(now);
-    client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+	
+	request.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp",function(err,res,body){
+	  if(err) callback(err,null)
+	  if(res.statusCode !== 200 ){
+		if(body == 'undefined')
+			return callback(new Error("Weather station data not provided"),null );
+		else if(typeof body.Data == 'undefined')
+			return callback(new Error("Weather station data not provided"),null );
+		
+		callback(null,body);
+	  } 
+	});
+	
+	
+    /* client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
 		if(data == 'undefined')
 			return callback(new Error("Weather station data not provided"),null );
 		else if(typeof data.Data == 'undefined')
 			return callback(new Error("Weather station data not provided"),null );
 		
 		callback(null,data);
-	})
+	}) */
 }
 
 
