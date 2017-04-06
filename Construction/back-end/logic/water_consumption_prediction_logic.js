@@ -6,7 +6,7 @@ var moment = require('moment-timezone');
 var client = new Client();
 
 var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction');
-var weatherHistoryManagement = require('../data_management/weather_history')
+var weatherHistoryManagement = require('../data_management/weather_history_management');
 var cropUserManagement = require('../data_management/crop_user_management');
 var sun_rhours,sun_rmin,getWeather;
 

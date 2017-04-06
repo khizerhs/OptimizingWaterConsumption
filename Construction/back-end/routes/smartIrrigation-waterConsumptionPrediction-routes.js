@@ -1,11 +1,11 @@
 
 module.exports = function(app) {
-var weatherHistoryManagement = require('../data_management/weather_history_management');
+var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction');
 var cropUserManagement = require('../data_management/crop_user_management');
 var waterConsumptionPrediction = require('../logic/water_consumption_prediction_logic');
 	app.route('/water-consumption-prediction/machine-learning')
     .post(function(req,res){
-		weatherHistoryManagement.storeMachineLearningModel(req.body,function(err){
+		waterConsumptionPredictionManagement.storeMachineLearningModel(req.body,function(err){
 			if (err)
 			  res.status(500).send(err);
 			else
