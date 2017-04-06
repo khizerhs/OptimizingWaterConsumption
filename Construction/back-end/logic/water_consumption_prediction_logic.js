@@ -49,7 +49,7 @@ function getWeatherInfo (date, callback){
 		
 		if(his.HlyPrecip.Value == null){
 			console.log("Getting data from yesterday")
-			var yesterday = moment(date).tz('America/Los_Angeles').subtract(1, 'day').format('YYYY-MM-DD');
+			var yesterday = moment(date).subtract(1, 'day').format('YYYY-MM-DD');
 			console.log(yesterday);
 			callCimisApi(yesterday, function(err,data){
 				if(err)
