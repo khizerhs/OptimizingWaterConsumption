@@ -37,8 +37,14 @@ exports.createWeatherHistory = function(body,callback){
 	
 }
 
-exports.getWeatherHistory = function(body,callback){
-	WeatherHistory.findOne(body).exec(function(err, weatherHistory) {
+exports.getWeatherHistory = function(startDate,endDate,callback){
+	console.log("Start date:"+startDate+" and endDate:"+endDate)
+	WeatherHistory.findOne({
+                creation_date: {
+                    $gte: startDate,
+                    $lte: endDate
+                }
+            }).exec(function(err, weatherHistory) {
             callback(err,weatherHistory);
     });
 }

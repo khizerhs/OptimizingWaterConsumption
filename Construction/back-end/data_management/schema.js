@@ -59,7 +59,7 @@ var weatherHistorySchema = new mongoose.Schema({
   wind_speed:{type:String},
   wind_direction: {type:String},
   soil_temperature: {String},
-  water_consumption_predicted: {String},
+  water_consumption_predicted: {type: String, required : true},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
