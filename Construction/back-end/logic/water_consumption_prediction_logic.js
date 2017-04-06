@@ -93,12 +93,14 @@ function getWeatherInfo (callback){
 }
 //Method that calculates the future water water consumption
 exports.getWaterConsumptionPrediction = function(query,callback){
-	
-	var startDate = new Date();
-	startDate.setHours(0,0,0);
-	var endDate = new Date();
-	endDate.setHours(23,59,59)
-	weatherHistoryManagement.getWeatherHistory(startDate,endDate,function(err,weatherHistory){
+	//var startDate = new Date();
+	var startDate = moment(new Date())
+    .set({ hour: 0, minute: 0 });
+	startDate.tz('America/Los_Angeles').format()
+	var endDate = moment(new Date())
+    .set({ hour: 23, minute: 59 });
+	endDate.tz('America/Los_Angeles').format()
+	weatherHistoryManagement.getWeatherHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
 		if(err)
 			callback(err,null)
