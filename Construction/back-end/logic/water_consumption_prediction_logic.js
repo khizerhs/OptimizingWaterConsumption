@@ -133,10 +133,11 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						//The value predicted corresponds to the entire farm in one hour
 						console.log("Result" +result+ "and prediction"+prediction);
 						
-						weather_data.water_consumption_predicted = prediction;
+						weather_data.water_consumption_predicted = prediction.toString()
 						
 						weatherHistoryManagement.createWeatherHistory(weather_data,function(err){
-							
+							if(err)
+									return callback(err,null)
 							var cropUser = cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
 								if(err)
 									callback(err,null)
