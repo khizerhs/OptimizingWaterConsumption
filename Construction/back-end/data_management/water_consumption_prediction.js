@@ -6,7 +6,7 @@ var common = require('./common');
 var cropUserManagement = require('../data_management/crop_user_management');
 var queryCropUserId = cropUserManagement.queryCropUserId;
 var MachineLearning = schema.MachineLearning;
-var WeatherHistory = schema.WeatherHistory;
+var waterConsumptionPrediction = schema.waterConsumptionPrediction;
 
 
 exports.storeMachineLearningModel = function (body,callback){
@@ -25,26 +25,26 @@ exports.getMachineLearningModel = function(callback){
     });
 }
 
-exports.createWeatherHistory = function(body,callback){
+exports.createwaterConsumptionPrediction = function(body,callback){
 	var bayTime = common.getBayTime();
 	body.creation_date = bayTime;
 	body.crop_user_id = queryCropUserId();
 	console.log("Weather data" +JSON.stringify(body));
-	var weatherHistory = new WeatherHistory(body);
-	weatherHistory.save(function(err) {
+	var waterConsumptionPrediction = new waterConsumptionPrediction(body);
+	waterConsumptionPrediction.save(function(err) {
             callback(err);
     });
 	
 }
 
-exports.getWeatherHistory = function(startDate,endDate,callback){
+exports.getwaterConsumptionPrediction = function(startDate,endDate,callback){
 	console.log("Start date:"+startDate+" and endDate:"+endDate)
-	WeatherHistory.findOne({
+	waterConsumptionPrediction.findOne({
                 creation_date: {
                     $gte: startDate,
                     $lte: endDate
                 }
-            }).exec(function(err, weatherHistory) {
-            callback(err,weatherHistory);
+            }).exec(function(err, waterConsumptionPrediction) {
+            callback(err,waterConsumptionPrediction);
     });
 }

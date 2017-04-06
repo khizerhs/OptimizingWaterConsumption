@@ -5,7 +5,8 @@ var CronJob = require('cron').CronJob;
 var moment = require('moment-timezone');
 var client = new Client();
 
-var weatherHistoryManagement = require('../data_management/weather_history_management');
+var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction');
+var weatherHistoryManagement = require('../data_management/weather_history')
 var cropUserManagement = require('../data_management/crop_user_management');
 var sun_rhours,sun_rmin,getWeather;
 
@@ -16,6 +17,52 @@ var getSunR = new CronJob({
   timeZone: 'America/Los_Angeles'
 });
 getSunR.start();
+
+var getWeatherHistory = new CronJob({
+  cronTime: '00 05 00 * * *',
+  onTick: storeWeatherHistory,
+  start: false,
+  timeZone: 'America/Los_Angeles'
+});
+getWeatherHistory.start();
+
+function storeWeatherHistory(){
+	var yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	callCimisApi(yesterday, function(err,data){
+		if(err){
+			console.log("Could not populate weather data");
+		}
+		else{
+			var nnow = new Date();
+	nnow.setDate(nnow.getDate() - 1);
+	var now = moment(nnow).tz('America/Los_Angeles').format('YYYY-MM-DD');
+    console.log(now);
+	client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+		//console.log("Response"+JSON.stringify(data))
+		var history=data.Data.Providers[0].Records;
+		for(var i=0;i<1;i++){
+			var weatherRecord={
+			  zipcode : history[i].ZipCodes,
+			  precipitation : history[i].HlyPrecip.Value,
+			  solar_radiation:history[i].HlyNetRad.Value,
+			  vapor_pressure:history[i].HlyVapPres.Value,
+			  air_temperature:history[i].HlyAirTmp.Value,
+			  relative_humidity:history[i].HlyRelHum.Value,
+			  dew_point:history[i].HlyDewPnt.Value,
+			  wind_speed:history[i].HlyWindSpd.Value,
+			  wind_direction: history[i].HlyWindDir.Value,
+			  soil_temperature: history[i].HlySoilTmp.Value,
+			  hour : history[i].Hour
+			}
+		weatherHistoryManagement.createweatherHistory(weatherRecord,function(err){
+			if(err){console.log("Error occured populating weather history data");}
+			});
+		}
+	});	
+		}
+});
+}
 
 function getSunRiseInfo(){	
     client.get("http://api.wunderground.com/api/90e662793af1aa07/conditions/astronomy/q/CA/San_Jose.json", function (data, response) {
@@ -98,7 +145,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
     .set({ hour: 0, minute: 0 });
 	var endDate = moment().tz('America/Los_Angeles')
     .set({ hour: 23, minute: 59 });
-	weatherHistoryManagement.getWeatherHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
+	waterConsumptionPredictionManagement.getwaterConsumptionPrediction(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
 		if(err)
 			callback(err,null)
@@ -107,7 +154,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 				console.log(JSON.stringify(weather_data));
 				if(err)
 						return callback(err,null);
-				weatherHistoryManagement.getMachineLearningModel(function(err,model){		
+				waterConsumptionPredictionManagement.getMachineLearningModel(function(err,model){		
 					
 					if(err)
 						callback(err,null);
@@ -137,7 +184,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						
 						weather_data.water_consumption_predicted = prediction.toString()
 						
-						weatherHistoryManagement.createWeatherHistory(weather_data,function(err){
+						waterConsumptionPredictionManagement.createwaterConsumptionPrediction(weather_data,function(err){
 							if(err)
 									return callback(err,null)
 							cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
@@ -184,7 +231,7 @@ function callCimisApi(now,callback){
 			return callback(new Error("Weather station data not provided"),null );
 		
 		callback(null,data);
-	})
+	});
 }
 
 
