@@ -94,10 +94,12 @@ function getWeatherInfo (callback){
 //Method that calculates the future water water consumption
 exports.getWaterConsumptionPrediction = function(query,callback){
 	
-	var now = moment().format('LL'); 
-	console.log("Date"+now);
-	weatherHistoryManagement.getWeatherHistory({creation_date : now},function(err,weatherHistory){
-		
+	var startDate = new Date();
+	startDate.setHours(0,0,0);
+	var endDate = new Date();
+	endDate.setHours(23,59,59)
+	weatherHistoryManagement.getWeatherHistory(startDate,endDate,function(err,weatherHistory){
+		var acreage = 428
 		if(err)
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory == null){
@@ -118,7 +120,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						for(var key in weather_data){	 
 							weather_record.push(weather_data[key]);
 						}
-						var acreage = 428
+						
 						//Include acreage into the weather_record
 						weather_record.unshift(acreage)
 						//weather_record = weather_record.slice(2,weather_record.length);
@@ -138,7 +140,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						weatherHistoryManagement.createWeatherHistory(weather_data,function(err){
 							if(err)
 									return callback(err,null)
-							var cropUser = cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
+							cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
 								if(err)
 									callback(err,null)
 								else{
@@ -156,7 +158,18 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 			
 			})
 		}else{
-			callback(err,weatherHistory.prediction)
+			console.log("Weather history found");
+			cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
+				if(err)
+					callback(err,null)
+				else{
+					//Return the prediction in liters in one day
+					console.log(JSON.stringify(cropUser))
+					console.log(JSON.stringify(weatherHistory))
+					predictionToLitersInOneDay = (weatherHistory.water_consumption_predicted/acreage)/0.035315*cropUser.field_size*24
+					callback(err,{prediction : predictionToLitersInOneDay});
+				}
+			})
 		}
 	
 	})
@@ -169,7 +182,7 @@ function callCimisApi(now,callback){
     client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
 		if(data == 'undefined')
 			return callback(new Error("Weather station data not provided"),null );
-		else if(typeof data.Data.Providers[0] == 'undefined')
+		else if(typeof data.Data == 'undefined')
 			return callback(new Error("Weather station data not provided"),null );
 		
 		callback(null,data);
