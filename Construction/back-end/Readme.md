@@ -90,7 +90,7 @@ Expected Output:
 
 ## Water consumption machine learning
 ### Prediction 
-    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=2017-04-04
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=YYYY-MM-DD
 
 Expected Output:
 
