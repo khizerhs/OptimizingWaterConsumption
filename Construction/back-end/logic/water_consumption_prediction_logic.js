@@ -33,9 +33,9 @@ function getSunRiseInfo(){
 });
 }
 
-function getWeatherInfo (callback){
+function getWeatherInfo (date, callback){
     
-	var now = moment(new Date()).tz('America/Los_Angeles').format('YYYY-MM-DD');
+	var now = moment(date).tz('America/Los_Angeles').format('YYYY-MM-DD');
     console.log(now);
 	
    callCimisApi(now, function(err,data){
@@ -47,10 +47,10 @@ function getWeatherInfo (callback){
 		//Peak hour or the hottest time during the day is at three p.m. during the day
 		var his = records[14];
 		
-		if(his.HlyPrecip.Value == 'null'){
+		if(his.HlyPrecip.Value == null){
 			console.log("Getting data from yesterday")
-			var yesterday = new Date(date.getTime());
-			yesterday.setDate(date.getDate() - 1);
+			var yesterday = moment(date).tz('America/Los_Angeles').subtract(1, 'day').format('YYYY-MM-DD');
+			console.log(yesterday);
 			callCimisApi(yesterday, function(err,data){
 				if(err)
 					return callback(err,null );
@@ -93,17 +93,17 @@ function getWeatherInfo (callback){
 }
 //Method that calculates the future water water consumption
 exports.getWaterConsumptionPrediction = function(query,callback){
-	//var startDate = new Date();
-	var startDate = moment().tz('America/Los_Angeles')
+	var date = new Date(query.date);
+	var startDate = moment(date).tz('America/Los_Angeles')
     .set({ hour: 0, minute: 0 });
-	var endDate = moment().tz('America/Los_Angeles')
+	var endDate = moment(date).tz('America/Los_Angeles')
     .set({ hour: 23, minute: 59 });
 	weatherHistoryManagement.getWeatherHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
 		if(err)
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory == null){
-			getWeatherInfo(function(err,weather_data){		
+			getWeatherInfo(date, function(err,weather_data){		
 				console.log(JSON.stringify(weather_data));
 				if(err)
 						return callback(err,null);
@@ -147,6 +147,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 									//Return the prediction in liters in one day
 									console.log(JSON.stringify(cropUser))
 									predictionToLitersInOneDay = (prediction/acreage)/0.035315*cropUser.field_size*24
+									predictionToLitersInOneDay *= 1000 //convert to mililiters
 									callback(err,{prediction : predictionToLitersInOneDay});
 								}
 							})
@@ -167,6 +168,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 					console.log(JSON.stringify(cropUser))
 					console.log(JSON.stringify(weatherHistory))
 					predictionToLitersInOneDay = (weatherHistory.water_consumption_predicted/acreage)/0.035315*cropUser.field_size*24
+					predictionToLitersInOneDay *= 1000 //convert to mililiters
 					callback(err,{prediction : predictionToLitersInOneDay});
 				}
 			})
