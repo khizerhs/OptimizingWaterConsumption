@@ -16,7 +16,8 @@ var waterConsumptionPrediction = require('../logic/water_consumption_prediction_
 	app.route('/water-consumption-prediction/prediction')
     .get(function(req,res){
 		var query = {
-			crop_user_id: req.param('crop_user_id')
+			crop_user_id: req.param('crop_user_id'),
+			date : req.param('date')
 		}
 		waterConsumptionPrediction.getWaterConsumptionPrediction(query,function(err,prediction){
 			if (err)
