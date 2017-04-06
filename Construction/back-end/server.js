@@ -28,9 +28,6 @@ process.on('uncaughtException', function (err) {
   console.log("Exception caught",err);
   //response.status(500).send('Something broke!')
 })
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -44,9 +41,13 @@ var allowCrossDomain = function(req, res, next) {
       next();
     }
 };
+app.use(allowCrossDomain);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-//app.use(allowCrossDomain);
-app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
+
+
+//app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
 
 var sensor_routes = require('./routes/smartIrrigation-sensor-routes');
 var user_routes = require('./routes/smartIrrigation-user-routes');
