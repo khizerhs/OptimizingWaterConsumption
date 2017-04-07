@@ -20,6 +20,6 @@ function calculaterWaterConsumption(wch_list){
 		water_consumption += Number(wch.water_consumption);
 		
 	}
-	return water_consumption;
+	return {total:water_consumption};
 	
 }
