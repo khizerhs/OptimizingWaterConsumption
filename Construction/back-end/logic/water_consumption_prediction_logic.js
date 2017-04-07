@@ -125,15 +125,11 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						weather_record.unshift(acreage)
 						//weather_record = weather_record.slice(2,weather_record.length);
 						console.log("Weather data: "+weather_record);
-						var result = []
-						var prediction = 0;
-						for(var i = 0; i < coeffs.length; i++){
-							result.push(coeffs[i]*scale[i]*weather_record[i]);
-							prediction += coeffs[i]*scale[i]*weather_record[i];
-							
-						}
-						//The value predicted corresponds to the entire farm in one hour
-						console.log("Result" +result+ "and prediction"+prediction);
+						
+						var prediction = math.dotMultiply(coeffs,scale)
+						prediction = math.dotMultiply(prediction,weather_record)
+						var prediction = math.sum(prediction)
+						console.log("Prediction result" +prediction);
 						
 						weather_data.water_consumption_predicted = prediction.toString()
 						
