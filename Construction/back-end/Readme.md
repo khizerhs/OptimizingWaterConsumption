@@ -87,15 +87,55 @@ Expected Output:
     Status Code: 200 OK
     Response Body:
     [{"_id":"58998a410494c5379542d348","name":"temperature","description":"test","__v":0}]
+	
+## Water consumption
+### Get Water history
 
-## Water consumption machine learning
-### Prediction 
-    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=YYYY-MM-DD
+	GET https://sjsusmartfarm-backend.herokuapp.com/water-history?start=MM-DD-YYYY HH:MM&end=MM-DD-YYYY HH:MM
 
 Expected Output:
 
     Status Code: 200 OK
     Response Body:
+    [
+	  {
+		"_id": "58c5037398f9080004fdd170",
+		"crop_user_id": "589d54a5055013627647c9e7",
+		"evatranspiration": "0",
+		"water_consumption": "79",
+		"__v": 0,
+		"creation_date": "2017-03-12T00:14:43.924Z"
+	  },
+	  {
+		"_id": "58c5085a98f9080004fdd18a",
+		"crop_user_id": "589d54a5055013627647c9e7",
+		"evatranspiration": "0",
+		"water_consumption": "43",
+		"__v": 0,
+		"creation_date": "2017-03-12T00:35:38.090Z"
+	  }
+	]
+
+### Get total water consumption	
+
+	GET https://sjsusmartfarm-backend.herokuapp.com/water-history/total-consumption?start=MM-DD-YYYY HH:MM&end=MM-DD-YYYY HH:MM
+	
+Expected Output:
+
+    Status Code: 200 OK
+	
+	{
+		"total" : "3000" //in mililiters
+	}
+## Water consumption machine learning
+### Prediction 
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=YYYY-MM-DD
+
+	
+Expected Output:
+
+    Status Code: 200 OK
+    Response Body:
     {
-		"prediction": 186.32683154658497 //in mililiters
+		"prediction": "186.32683154658497" //in mililiters
 	}
