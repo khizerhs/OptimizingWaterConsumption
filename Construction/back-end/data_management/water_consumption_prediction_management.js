@@ -30,24 +30,23 @@ exports.createWaterConsumptionPrediction = function(body,callback){
 	body.creation_date = bayTime;
 	body.crop_user_id = queryCropUserId();
 	console.log("Weather data" +JSON.stringify(body));
-	var WaterConsumptionPrediction = new WaterConsumptionPrediction(body);
-	WaterConsumptionPrediction.save(function(err) {
+	var waterConsumptionPrediction = new WaterConsumptionPrediction(body);
+	waterConsumptionPrediction.save(function(err) {
             callback(err);
     });
 	
 }
 
 
-exports.getWaterConsumptionPrediction = function(req, res){
-	WaterConsumptionPrediction.find({crop_user_id: req.param('cropUserId'),
-    creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, WaterConsumptionPrediction) {
-      if (WaterConsumptionPrediction == undefined || WaterConsumptionPrediction == null)
-        res.status(404).json({message: 'getWaterConsumptionPrediction record Not found'});
-      else if (err)
-        res.send(err);
-      else {
-        res.json(WaterConsumptionPrediction);
-      }
-    }
-  )
+exports.getWaterConsumptionPredictionHistory = function(startDate,endDate,callback){
+  console.log("Start date:"+startDate+" and endDate:"+endDate)
+  WaterConsumptionPrediction.findOne({
+                 creation_date: {
+                     $gte: startDate,
+                     $lte: endDate
+                 }
+             }).exec(function(err, weatherHistory) {
+             callback(err,weatherHistory);
+     });
 }
+

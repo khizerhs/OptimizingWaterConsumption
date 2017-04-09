@@ -1,6 +1,6 @@
 
 module.exports = function(app) {
-var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction');
+var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction_management');
 var cropUserManagement = require('../data_management/crop_user_management');
 var waterConsumptionPrediction = require('../logic/water_consumption_prediction_logic');
 	app.route('/water-consumption-prediction/machine-learning')

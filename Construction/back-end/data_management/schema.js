@@ -110,4 +110,5 @@ exports.CropUser = mongoose.model('CropUser', cropUserSchema);
 exports.SensorHistory = mongoose.model('SensorHistory', sensorHistorySchema);
 exports.WaterConsumptionHistory = mongoose.model('WaterConsumption', waterConsumptionHistorySchema);
 exports.WeatherHistory= mongoose.model('WeatherHistory', weatherHistorySchema);
+exports.WaterConsumptionPrediction= mongoose.model('waterConsumptionPrediction', waterConsumptionPredictionSchema);
 exports.MachineLearning = mongoose.model('MachineLearning', machineLearningSchema);

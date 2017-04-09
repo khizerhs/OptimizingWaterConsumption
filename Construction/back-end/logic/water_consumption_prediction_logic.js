@@ -5,7 +5,7 @@ var CronJob = require('cron').CronJob;
 var moment = require('moment-timezone');
 var client = new Client();
 
-var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction');
+var waterConsumptionPredictionManagement = require('../data_management/water_consumption_prediction_management');
 var weatherHistoryManagement = require('../data_management/weather_history_management');
 var cropUserManagement = require('../data_management/crop_user_management');
 var sun_rhours,sun_rmin,getWeather;
@@ -146,7 +146,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 	var endDate = moment(date)
     .set({ hour: 23, minute: 59 });
 
-	waterConsumptionPredictionManagement.getwaterConsumptionPrediction(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
+	waterConsumptionPredictionManagement.getWaterConsumptionPredictionHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
 		if(err)
 			callback(err,null)
@@ -181,7 +181,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						
 						weather_data.water_consumption_predicted = prediction.toString()
 						
-						waterConsumptionPredictionManagement.createwaterConsumptionPrediction(weather_data,function(err){
+						waterConsumptionPredictionManagement.createWaterConsumptionPrediction(weather_data,function(err){
 							if(err)
 									return callback(err,null)
 							cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
