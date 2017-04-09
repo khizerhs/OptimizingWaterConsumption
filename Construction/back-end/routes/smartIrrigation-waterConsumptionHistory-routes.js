@@ -7,6 +7,7 @@ module.exports = function(app) {
   app.route('/water-history')
     .get(function(req,res){
 		var query = {
+            cropUserId: req.param('cropUserId'),
 			start: req.param('start'),
 			end : req.param('end')
 		}
@@ -22,6 +23,7 @@ module.exports = function(app) {
 	app.route('/water-history/total-consumption')
     .get(function(req,res){
 		var query = {
+            cropUserId: req.param('cropUserId'),
 			start: req.param('start'),
 			end : req.param('end')
 		}

@@ -11,11 +11,6 @@ module.exports = function(app) {
   app.route('/sensor-history/:sensorId')
     .get(smartIrrigation.read_sensor_history);
 
-//    .put(smartIrrigation.update_sh)
-//    .delete(smartIrrigation.delete_sh);
-  app.route('/sensor-history-user/:sensorId/:cropUserId/:last')
-    .get(smartIrrigation.read_sensor_history_user);
-
-  app.route('/sensor-history-range/:sensorId/:cropUserId/:start/:end')
+  app.route('/sensor-history-range')
     .get(smartIrrigation.read_sensor_history_range);
 };
