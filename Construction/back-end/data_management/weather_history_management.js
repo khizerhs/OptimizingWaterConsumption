@@ -52,7 +52,7 @@ exports.weatherHistoryRange = function(req, res){
 	WeatherHistory.find({crop_user_id: req.param('cropUserId'),
     creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, weatherHistory) {
       if (weatherHistory == undefined || weatherHistory == null)
-        res.status(404).json({message: 'weatherHistoryRange record Not found'});
+        res.status(404).json({message: 'weatherHistoryRange record not found'});
       else if (err)
         res.send(err);
       else {
