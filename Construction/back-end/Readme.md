@@ -139,3 +139,29 @@ Expected Output:
     {
 		"prediction": "186.32683154658497" //in mililiters
 	}
+
+## Weather history
+### Get weather history
+    GET https://sjsusmartfarm-backend.herokuapp.com/weather-history-range?cropUserId=XXXXXXXX&start=YYYY-MM-DDThh:mm::ss&end=YYYY-MM-DDThh:mm::ss
+
+Expected Output:
+
+    Status Code: 200 OK
+    Response Body:
+    [
+      {
+        "_id": "58e99291c562303c56d1d167",
+        "precipitation": "0",
+        "solar_radiation": "640",
+        "vapor_pressure": "14.9",
+        "air_temperature": "63.5",
+        "relative_humidity": "74",
+        "dew_point": "55.2",
+        "wind_speed": "7.4",
+        "wind_direction": "269",
+        "water_consumption_predicted": "0.02041394935438913",
+        "crop_user_id": "58caea3116a1664e9fdb71d7",
+        "__v": 0,
+        "creation_date": "2017-04-08T18:46:57.295Z"
+      }
+    ]
