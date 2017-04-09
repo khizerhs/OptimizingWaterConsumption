@@ -43,7 +43,7 @@ module.exports = function(app) {
   app.route('/water-history/:cropUserId')
     .get(smartIrrigation.read_wch)
     .put(smartIrrigation.update_wch)
-    .delete(smartIrrigation.delete_wch);
+    /*.delete(smartIrrigation.delete_wch)*/;
 
   app.route('/wh-date')
     .get(smartIrrigation.read_wch_date);
