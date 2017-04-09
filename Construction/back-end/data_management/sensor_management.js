@@ -50,7 +50,7 @@ exports.update_sensor = function(req, res) {
   });
 };
 
-
+/*
 exports.delete_sensor = function(req, res) {
 
 
@@ -62,7 +62,7 @@ exports.delete_sensor = function(req, res) {
     else
       res.json({ message: 'Sensor successfully deleted' });
   });
-};
+};*/
 
 exports.querySensorId = function(sensorType) {
     switch (sensorType) {
