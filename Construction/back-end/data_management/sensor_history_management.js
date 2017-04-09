@@ -95,46 +95,9 @@ exports.read_sensor_history = function(req, res) {
   });
 };
 
-exports.read_sensor_history_user = function(req, res) {
-  var last = parseInt(req.params.last)
-  if (last > 20) {
-    last = 20
-  }
-  var result = {}
-  var sensors = req.params.sensorId.split(";")
-
-  console.log(req.params.cropUserId)
-  // res.send(JSON.stringify({}))
-  var count = 0
-
-  for (var i = 0;i < sensors.length; ++i) {
-    var sensorId = sensors[i]
-    
-    SensorHistoryManagement.find({sensor_id: sensorId, crop_user_id: req.params.cropUserId}, function(err, sensorHistory) {
-      if (sensorHistory == undefined || sensorHistory == null)
-        res.status(404).json({message: 'read_sensor_history_user record Not found'});
-      else if (err)
-        res.send(err);
-      else {
-        if (0 < sensorHistory.length) {
-          var sid = sensorHistory[0].sensor_id
-          result[sid] = sensorHistory
-          count += 1
-        } else {
-          count += 1
-        }
-
-        if (count == sensors.length) {
-          res.json(result);
-        }
-      }
-    }).sort({$natural: -1}).limit(last)
-  }
-};
-
 exports.read_sensor_history_range = function(req, res) {
-  SensorHistoryManagement.find({sensor_id: req.params.sensorId, crop_user_id: req.params.cropUserId, 
-    creation_date: {$gte: req.params.start, $lt:req.params.end}}, function(err, sensorHistory) {
+  SensorHistoryManagement.find({sensor_id: req.param('sensorId'), crop_user_id: req.param('cropUserId'), 
+    creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, sensorHistory) {
       if (sensorHistory == undefined || sensorHistory == null)
         res.status(404).json({message: 'read_sensor_history_range record Not found'});
       else if (err)

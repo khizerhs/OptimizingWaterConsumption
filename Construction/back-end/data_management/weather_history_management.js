@@ -37,14 +37,16 @@ exports.createWeatherHistory = function(body,callback){
 	
 }
 
-exports.getWeatherHistory = function(startDate,endDate,callback){
-	console.log("Start date:"+startDate+" and endDate:"+endDate)
-	WeatherHistory.findOne({
-                creation_date: {
-                    $gte: startDate,
-                    $lte: endDate
-                }
-            }).exec(function(err, weatherHistory) {
-            callback(err,weatherHistory);
-    });
+exports.getWeatherHistory = function(req, res){
+	WeatherHistory.find({crop_user_id: req.param('cropUserId'),
+    creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, weatherHistory) {
+      if (weatherHistory == undefined || weatherHistory == null)
+        res.status(404).json({message: 'getWeatherHistory record Not found'});
+      else if (err)
+        res.send(err);
+      else {
+        res.json(weatherHistory);
+      }
+    }
+  )
 }

@@ -59,7 +59,7 @@ exports.list_wchs = function(query, callback) {
   }else{
 	  
 	  if(query.end == undefined || query.end == null){
-		waterConsumptionHistory.find({
+		waterConsumptionHistory.find({crop_user_id: query.cropUserId,
 			creation_date: {
 				$gte: moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format()
 			}
@@ -72,7 +72,7 @@ exports.list_wchs = function(query, callback) {
 	  }else{
 		  console.log("Date begin: "+moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format())
 		  console.log("Date end: "+moment(query.end, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format())
-		  waterConsumptionHistory.find({
+		  waterConsumptionHistory.find({crop_user_id: query.cropUserId,
 			creation_date: {
 					$gte: moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format(),
 					$lt: moment(query.end, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format()

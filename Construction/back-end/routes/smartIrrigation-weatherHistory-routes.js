@@ -13,4 +13,6 @@ var weatherHistoryManagement = require('../data_management/weather_history_manag
 		
 	});
 
+    app.route('/weather-history-range')
+    .get(weatherHistoryManagement.getWeatherHistory);
 };
