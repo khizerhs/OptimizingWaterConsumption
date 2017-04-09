@@ -50,7 +50,7 @@ exports.update_user = function(req, res) {
 };
 
 
-exports.delete_user = function(req, res) {
+/*exports.delete_user = function(req, res) {
 
 
   User.remove({
@@ -61,7 +61,7 @@ exports.delete_user = function(req, res) {
     else
       res.json({ message: 'User successfully deleted' });
   });
-};
+};*/
 
 exports.login_user = function(req, res) {
   if (undefined === req.body.name || undefined === req.body.password ) {
