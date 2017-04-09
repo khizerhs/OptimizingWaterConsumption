@@ -98,6 +98,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
     .set({ hour: 0, minute: 0 });
 	var endDate = moment(date)
     .set({ hour: 23, minute: 59 });
+	
 	weatherHistoryManagement.getWeatherHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 		var acreage = 428
 		if(err)
