@@ -47,9 +47,10 @@ exports.getWeatherHistory = function(startDate,endDate,callback){
              }).exec(function(err, weatherHistory) {
              callback(err,weatherHistory);
      });
+}
 
 exports.weatherHistoryRange = function(req, res){
-	WeatherHistory.find({crop_user_id: req.param('cropUserId'),
+  WeatherHistory.find({crop_user_id: req.param('cropUserId'),
     creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, weatherHistory) {
       if (weatherHistory == undefined || weatherHistory == null)
         res.status(404).json({message: 'weatherHistoryRange record not found'});
@@ -61,3 +62,4 @@ exports.weatherHistoryRange = function(req, res){
     }
   )
 }
+
