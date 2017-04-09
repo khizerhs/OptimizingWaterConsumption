@@ -11,7 +11,7 @@ module.exports = function(app) {
   app.route('/sensors/:sensorId')
     .get(smartIrrigation.read_sensor)
     .put(smartIrrigation.update_sensor)
-    .delete(smartIrrigation.delete_sensor);
+    /*.delete(smartIrrigation.delete_sensor)*/;
 };
 
 // Put MQTT consumer here temporary
