@@ -112,7 +112,7 @@ exports.update_wch = function(req, res) {
   });
 };
 
-
+/*
 exports.delete_wch = function(req, res) {
   waterConsumptionHistory.remove({
     _id: req.params.cropUserId
@@ -123,7 +123,7 @@ exports.delete_wch = function(req, res) {
       res.json({ message: 'Record successfully deleted' });
   });
 };
-
+*/
 
 exports.read_wch_date = function(req, res){
 if(req.query.end == undefined || req.query.end == null){
