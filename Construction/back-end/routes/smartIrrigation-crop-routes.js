@@ -11,5 +11,5 @@ module.exports = function(app) {
   app.route('/crops/:cropId')
     .get(smartIrrigation.read_crop)
     .put(smartIrrigation.update_crop)
-    .delete(smartIrrigation.delete_crop);
+    /*.delete(smartIrrigation.delete_crop);*/
 };
