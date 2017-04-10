@@ -20,7 +20,7 @@ var waterHistoryManagement = require('../data_management/water_history_managemen
 var common = require('../data_management/common')
 
 var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://52.35.182.188:1883')
+var client = mqtt.connect(process.env.mqttconnectionstring)
 
 var topics = common.mqtt_topics
 
