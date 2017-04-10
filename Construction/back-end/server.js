@@ -28,7 +28,8 @@ process.on('uncaughtException', function (err) {
   console.log("Exception caught",err);
   //response.status(500).send('Something broke!')
 })
-var allowCrossDomain = function(req, res, next) {
+
+/*var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 	res.header("Access-Control-Allow-Credentials", true);
@@ -45,7 +46,27 @@ var allowCrossDomain = function(req, res, next) {
 //app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors());*/
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+
+app.use(allowCrossDomain);
+
 
 
 //app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
