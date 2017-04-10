@@ -180,7 +180,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 						console.log("Prediction result" +prediction);
 						
 						weather_data.water_consumption_predicted = prediction.toString()
-						
+						weather_data.date_prediction = date;
 						waterConsumptionPredictionManagement.createWaterConsumptionPrediction(weather_data,function(err){
 							if(err)
 									return callback(err,null)

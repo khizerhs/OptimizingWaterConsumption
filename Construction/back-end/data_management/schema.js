@@ -60,6 +60,7 @@ var waterConsumptionPredictionSchema = new mongoose.Schema({
   wind_direction: {type:String},
   soil_temperature: {String},
   water_consumption_predicted: {type: String, required : true},
+  date_prediction : {type: Date},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 

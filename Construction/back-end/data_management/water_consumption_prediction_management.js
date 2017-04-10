@@ -41,7 +41,7 @@ exports.createWaterConsumptionPrediction = function(body,callback){
 exports.getWaterConsumptionPredictionHistory = function(startDate,endDate,callback){
   console.log("Start date:"+startDate+" and endDate:"+endDate)
   WaterConsumptionPrediction.findOne({
-                 creation_date: {
+                 date_prediction: {
                      $gte: startDate,
                      $lte: endDate
                  }
