@@ -45,7 +45,7 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.user(cors())
+app.use(cors());
 
 
 //app.use(cors()); // CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
