@@ -13,7 +13,7 @@ setInterval(function() {
 }, 300000); // every 5 minutes (300000)
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://52.35.182.188:27017/maindb', function (err, res) {
+mongoose.connect(process.env.connectionstring, function (err, res) {
   if (err) { 
     console.log ('ERROR connecting to MongoDB :' + err);
   } else {
