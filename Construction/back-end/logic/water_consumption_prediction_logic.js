@@ -106,7 +106,7 @@ function getWeatherInfo (date, callback){
     console.log(now);
 	
    callCimisApi(now, function(err,data){
-        //console.log("Response"+JSON.stringify(data));
+        console.log("Response"+JSON.stringify(data));
 		if(err)
 			return callback(err,null );
 		
@@ -205,7 +205,6 @@ function getWaterConsumptionPrediction (query,callback){
     .set({ hour: 23, minute: 59 });
 
 	waterConsumptionPredictionManagement.getWaterConsumptionPredictionHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
-		var acreage = 428
 		if(err)
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory.length == 0){
