@@ -38,7 +38,7 @@ getWeatherHistory.start();
 function calculateWaterConsumptionPrediction(){
 	console.log("Calculating daily water consumption prediction")
 	crop_user_id = cropUserManagement.queryCropUserId();
-	var now = moment(new Date()).format('YYYY-MM-DD');
+	var now = moment(new Date()).tz('America/Los_Angeles').format('YYYY-MM-DD');
 	getWaterConsumptionPrediction({crop_user_id: crop_user_id, date:now}, function(err,prediction){
 		if(!err)
 			console.log("Prediction: "+JSON.stringify(prediction))
