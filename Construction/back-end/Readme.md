@@ -141,7 +141,7 @@ Expected Output:
 	}
 
 ### Prediction range 
-    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/predictionRange?crop_user_id=XXXXXXXX&&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/predictionByRange?crop_user_id=XXXXXXXX&&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
 
     
 Expected Output:
