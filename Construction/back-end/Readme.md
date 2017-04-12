@@ -127,7 +127,7 @@ Expected Output:
 	{
 		"total" : "3000" //in mililiters
 	}
-## Water consumption machine learning
+## Water consumption prediction
 ### Prediction 
     GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=XXXXXXXX&&date=YYYY-MM-DD
 
@@ -139,6 +139,30 @@ Expected Output:
     {
 		"prediction": "186.32683154658497" //in mililiters
 	}
+
+### Prediction range 
+    GET https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/predictionRange?crop_user_id=XXXXXXXX&&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+
+    
+Expected Output:
+
+    Status Code: 200 OK
+    Response Body:
+    [
+      {
+        "prediction": 381.7383576817521,
+        "date": "2017-02-01T00:00:00.000Z"
+      },
+      {
+        "prediction": 382.39950037599226,
+        "date": "2017-02-02T00:00:00.000Z"
+      },
+      {
+        "prediction": 384.00889388483745,
+        "date": "2017-02-03T00:00:00.000Z"
+      }
+    ]
+
 
 ## Weather history
 ### Get weather history

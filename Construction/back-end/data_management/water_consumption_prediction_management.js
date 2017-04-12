@@ -40,12 +40,12 @@ exports.createWaterConsumptionPrediction = function(body,callback){
 
 exports.getWaterConsumptionPredictionHistory = function(startDate,endDate,callback){
   console.log("Start date:"+startDate+" and endDate:"+endDate)
-  WaterConsumptionPrediction.findOne({
+  WaterConsumptionPrediction.find({
                  date_prediction: {
                      $gte: startDate,
                      $lte: endDate
                  }
-             }).exec(function(err, weatherHistory) {
+             }).sort({date_prediction : 1}).exec(function(err, weatherHistory) {
              callback(err,weatherHistory);
      });
 }

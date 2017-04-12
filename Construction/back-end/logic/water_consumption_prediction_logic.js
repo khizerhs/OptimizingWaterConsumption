@@ -18,6 +18,13 @@ var getSunR = new CronJob({
 });
 getSunR.start();
 
+var job = new CronJob({
+  cronTime: '00 00 17 * * *',
+  onTick: calculateWaterConsumptionPrediction(),
+  start: false
+});
+job.start();
+
 var getWeatherHistory = new CronJob({
   cronTime: '00 05 00 * * *',
   onTick: storeWeatherHistory,
@@ -25,6 +32,18 @@ var getWeatherHistory = new CronJob({
   timeZone: 'America/Los_Angeles'
 });
 getWeatherHistory.start();
+
+
+function calculateWaterConsumptionPrediction(){
+	console.log("Calculating daily water consumption prediction")
+	crop_user_id = cropUserManagement.queryCropUserId();
+	var now = moment(new Date()).format('YYYY-MM-DD');
+	getWaterConsumptionPrediction({crop_user_id: crop_user_id, date:now}, function(err,prediction){
+		if(!err)
+			console.log("Prediction: "+JSON.stringify(prediction))
+	})
+
+}
 
 function storeWeatherHistory(){
 	var yesterday = new Date();
@@ -138,8 +157,46 @@ function getWeatherInfo (date, callback){
 		
     });
 }
+
+function getDates(startDate, stopDate) {
+    var dateArray = [];
+    var currentDate = moment(startDate);
+    var stopDate = moment(stopDate);
+    while (currentDate <= stopDate) {
+        dateArray.push( moment(currentDate).format('YYYY-MM-DD') )
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+    return dateArray;
+}
+
+var getWaterConsumptionPredictionByRange = function (query,callback){
+	var date = new Date(query.start_date);
+	var startDate = moment(new Date(query.start_date))
+    .set({ hour: 0, minute: 0 });
+	var endDate = moment(new Date(query.end_date))
+    .set({ hour: 23, minute: 59 });
+    var predictions = [];
+
+    cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
+	    	if(err)
+	    		callback(err,null)
+	    	else{
+				waterConsumptionPredictionManagement.getWaterConsumptionPredictionHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
+					
+					for(var index in weatherHistory){					
+						var predictionToLitersInOneDay = (weatherHistory[index].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
+						predictionToLitersInOneDay *= 1000 //convert to mililiters
+						predictions.push({prediction : predictionToLitersInOneDay, date : weatherHistory[index].date_prediction});
+					}
+					callback(null, predictions)
+				})
+			}
+		})
+	
+}
+
 //Method that calculates the future water water consumption
-exports.getWaterConsumptionPrediction = function(query,callback){
+function getWaterConsumptionPrediction (query,callback){
 	var date = new Date(query.date);
 	var startDate = moment(date)
     .set({ hour: 0, minute: 0 });
@@ -150,7 +207,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 		var acreage = 428
 		if(err)
 			callback(err,null)
-		else if(weatherHistory == undefined || weatherHistory == null){
+		else if(weatherHistory == undefined || weatherHistory.length == 0){
 			getWeatherInfo(date, function(err,weather_data){		
 				console.log(JSON.stringify(weather_data));
 				if(err)
@@ -211,7 +268,7 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 					//Return the prediction in liters in one day
 					console.log(JSON.stringify(cropUser))
 					console.log(JSON.stringify(weatherHistory))
-					predictionToLitersInOneDay = (weatherHistory.water_consumption_predicted/acreage)/0.035315*cropUser.field_size*24
+					predictionToLitersInOneDay = (weatherHistory[0].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
 					predictionToLitersInOneDay *= 1000 //convert to mililiters
 					callback(err,{prediction : predictionToLitersInOneDay});
 				}
@@ -220,6 +277,8 @@ exports.getWaterConsumptionPrediction = function(query,callback){
 	
 	})
 }
+
+
 
 function callCimisApi(now,callback){
     client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
@@ -234,3 +293,7 @@ function callCimisApi(now,callback){
 }
 
 
+module.exports = {
+  getWaterConsumptionPrediction: getWaterConsumptionPrediction,
+  getWaterConsumptionPredictionByRange: getWaterConsumptionPredictionByRange
+}

@@ -17,13 +17,30 @@ var waterConsumptionPrediction = require('../logic/water_consumption_prediction_
     .get(function(req,res){
 		var query = {
 			crop_user_id: req.param('crop_user_id'),
-			date : req.param('date')
+			date : req.param('date')			
 		}
 		waterConsumptionPrediction.getWaterConsumptionPrediction(query,function(err,prediction){
 			if (err)
                 res.status(500).send(err.message);
 			else
 				res.status(200).json(prediction);
+		});
+		
+	});
+
+	app.route('/water-consumption-prediction/predictionByRange')
+    .get(function(req,res){
+		var query = {
+			crop_user_id: req.param('crop_user_id'),
+			start_date : req.param('start_date'),
+			end_date : req.param('end_date')
+		}
+		console.log("Received"+query);
+		waterConsumptionPrediction.getWaterConsumptionPredictionByRange(query, function(err,predictions){
+			if (err)
+                res.status(500).send(err.message);
+			else
+				res.status(200).json(predictions);
 		});
 		
 	});

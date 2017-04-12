@@ -37,6 +37,7 @@ var cropUserSchema = new mongoose.Schema({
   stage : {type: String},
   field_size: { type: String, required : true},
   field_capacity: { type: String, required : true},
+  acreage : { type: String},
   mad : { type: String, required : true},
   sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
 }, { autoIndex: true });
