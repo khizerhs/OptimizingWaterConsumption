@@ -114,7 +114,7 @@ function getWeatherInfo (date, callback){
 		//Peak hour or the hottest time during the day is at three p.m. during the day
 		var his = records[14];
 		
-		if(data == null || his.HlyPrecip.Value == null){
+		if(data == null || his == null){
 			console.log("Getting data from yesterday")
 			var yesterday = moment(date).subtract(1, 'day').format('YYYY-MM-DD');
 			console.log(yesterday);
@@ -140,7 +140,7 @@ function getWeatherInfo (date, callback){
 				callback(err,weatherRecord)
 			})
 		}else{
-			console.log(JSON.stringify(his));
+			console.log("Data"+JSON.stringify(his));
 			var weatherRecord={
 			  precipitation : his.HlyPrecip.Value,
 			  solar_radiation:his.HlyNetRad.Value,
