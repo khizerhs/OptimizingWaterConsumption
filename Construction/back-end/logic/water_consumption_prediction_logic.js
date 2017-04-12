@@ -210,9 +210,9 @@ function getWaterConsumptionPrediction (query,callback){
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory.length == 0){
 			getWeatherInfo(date, function(err,weather_data){		
-				console.log(JSON.stringify(weather_data));
+				console.log("Weather data"+JSON.stringify(weather_data));
 				if(err)
-						return callback(err,null);
+					return callback(err,null);
 				waterConsumptionPredictionManagement.getMachineLearningModel(function(err,model){		
 					
 					if(err)
