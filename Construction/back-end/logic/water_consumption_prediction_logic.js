@@ -107,8 +107,9 @@ function getWeatherInfo (date, callback){
 	
    callCimisApi(now, function(err,data){
         console.log("Response"+JSON.stringify(data));
-		if(err)
+		if(err){
 			return callback(err,null );
+		}
 		
 		var records=data.Data.Providers[0].Records;
 		//Peak hour or the hottest time during the day is at three p.m. during the day
