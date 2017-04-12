@@ -21,7 +21,8 @@ getSunR.start();
 var job = new CronJob({
   cronTime: '00 00 17 * * *',
   onTick: calculateWaterConsumptionPrediction(),
-  start: false
+  start: false,
+  timeZone: 'America/Los_Angeles'
 });
 job.start();
 
