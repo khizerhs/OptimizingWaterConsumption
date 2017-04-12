@@ -107,13 +107,7 @@ function getWeatherInfo (date, callback){
 	
    callCimisApi(now, function(err,data){
         console.log("Response"+JSON.stringify(data));
-		//if(err){
-		//	return callback(err,null);
-		//}
-		var records=data.Data.Providers[0].Records;
-		//Peak hour or the hottest time during the day is at three p.m. during the day
-		var his = records[14];
-		
+
 		if(err || data == null || his == null){
 			console.log("Getting data from yesterday")
 			var yesterday = moment(date).subtract(1, 'day').format('YYYY-MM-DD');
@@ -140,6 +134,9 @@ function getWeatherInfo (date, callback){
 				callback(err,weatherRecord)
 			})
 		}else{
+			var records=data.Data.Providers[0].Records;
+			//Peak hour or the hottest time during the day is at three p.m. during the day
+			var his = records[14];
 			console.log("Data"+JSON.stringify(his));
 			var weatherRecord={
 			  precipitation : his.HlyPrecip.Value,
