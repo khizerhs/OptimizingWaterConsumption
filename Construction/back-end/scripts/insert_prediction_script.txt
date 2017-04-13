@@ -67,4 +67,4 @@ https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/predict
 https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=58caea3116a1664e9fdb71d7&date=2017-04-09
 https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=58caea3116a1664e9fdb71d7&date=2017-04-10
 https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=58caea3116a1664e9fdb71d7&date=2017-04-11
-
+https://sjsusmartfarm-backend.herokuapp.com/water-consumption-prediction/prediction?crop_user_id=58caea3116a1664e9fdb71d7&date=2017-04-12

@@ -19,8 +19,8 @@ exports.storeMachineLearningModel = function (body,callback){
     });
 }
 
-exports.getMachineLearningModel = function(callback){
-	MachineLearning.findOne().sort({'_id': -1}).limit(1).exec(function(err, model) {
+exports.getMachineLearningModel = function(query,callback){
+	MachineLearning.findOne(query).sort({'_id': -1}).exec(function(err, model) {
             callback(err,model);
     });
 }
@@ -34,7 +34,6 @@ exports.createWaterConsumptionPrediction = function(body,callback){
 	waterConsumptionPrediction.save(function(err) {
             callback(err);
     });
-	
 }
 
 

@@ -209,50 +209,54 @@ function getWaterConsumptionPrediction (query,callback){
 				console.log("Weather data"+JSON.stringify(weather_data));
 				if(err)
 					return callback(err,null);
-				waterConsumptionPredictionManagement.getMachineLearningModel(function(err,model){		
-					
+
+				cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
 					if(err)
-						callback(err,null);
-					else{
-						console.log(JSON.stringify(model));
-						var coeffs = model.coeffs.split(",").map(Number);
-						var scale = model.features_scale.split(",").map(Number);
+						return callback(err,null)
+					waterConsumptionPredictionManagement.getMachineLearningModel({crop_user_id : crop_user_id},function(err,model){		
 						
-						var weather_record = [];
-						for(var key in weather_data){	 
-							weather_record.push(weather_data[key]);
+						if(err)
+							callback(err,null);
+						else{
+							console.log("Model: "+JSON.stringify(model));
+							var coeffs = model.coeffs.split(",").map(Number);
+							var scale = model.features_scale.split(",").map(Number);
+							
+							var weather_record = [];
+							for(var key in weather_data){	 
+								weather_record.push(weather_data[key]);
+							}
+							
+							//Include acreage into the weather_record
+							weather_record.unshift(cropUser.acreage)
+							//weather_record = weather_record.slice(2,weather_record.length);
+							console.log("Weather data: "+weather_record);
+							
+							var prediction = math.dotMultiply(coeffs,scale)
+							prediction = math.dotMultiply(prediction,weather_record)
+							console.log("Prediction vector: "+prediction);
+							var prediction = math.sum(prediction)
+							console.log("Prediction result" +prediction);
+							
+							weather_data.water_consumption_predicted = prediction.toString()
+							weather_data.date_prediction = date;
+							waterConsumptionPredictionManagement.createWaterConsumptionPrediction(weather_data,function(err){
+								if(err)
+										return callback(err,null)
+								
+								//Return the prediction in liters in one day
+								console.log(JSON.stringify(cropUser))
+								predictionToLitersInOneDay = (prediction/cropUser.acreage)/0.035315*cropUser.field_size*24
+								predictionToLitersInOneDay *= 1000 //convert to mililiters
+								callback(err,{prediction : predictionToLitersInOneDay});
+									
+								
+								
+							})
 						}
 						
-						//Include acreage into the weather_record
-						weather_record.unshift(acreage)
-						//weather_record = weather_record.slice(2,weather_record.length);
-						console.log("Weather data: "+weather_record);
-						
-						var prediction = math.dotMultiply(coeffs,scale)
-						prediction = math.dotMultiply(prediction,weather_record)
-						var prediction = math.sum(prediction)
-						console.log("Prediction result" +prediction);
-						
-						weather_data.water_consumption_predicted = prediction.toString()
-						weather_data.date_prediction = date;
-						waterConsumptionPredictionManagement.createWaterConsumptionPrediction(weather_data,function(err){
-							if(err)
-									return callback(err,null)
-							cropUserManagement.getCropUser({_id : query.crop_user_id}, function(err,cropUser){
-								if(err)
-									callback(err,null)
-								else{
-									//Return the prediction in liters in one day
-									console.log(JSON.stringify(cropUser))
-									predictionToLitersInOneDay = (prediction/acreage)/0.035315*cropUser.field_size*24
-									predictionToLitersInOneDay *= 1000 //convert to mililiters
-									callback(err,{prediction : predictionToLitersInOneDay});
-								}
-							})
-							
-						})
-					}
-					
+					})
+
 				})
 			
 			})

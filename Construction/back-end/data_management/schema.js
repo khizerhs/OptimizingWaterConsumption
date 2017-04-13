@@ -59,7 +59,7 @@ var waterConsumptionPredictionSchema = new mongoose.Schema({
   dew_point:{type:String},
   wind_speed:{type:String},
   wind_direction: {type:String},
-  soil_temperature: {String},
+  soil_temperature: {type:String},
   water_consumption_predicted: {type: String, required : true},
   date_prediction : {type: Date},
   creation_date: {type: Date, default: Date.now}
@@ -77,7 +77,7 @@ var weatherHistorySchema = new mongoose.Schema({
   dew_point:{type:String},
   wind_speed:{type:String},
   wind_direction: {type:String},
-  soil_temperature: {String},
+  soil_temperature: {type:String},
   date: {type: Date, default: Date.now},
   hour: {type: Number}
 }, { autoIndex: true });
