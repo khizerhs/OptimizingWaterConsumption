@@ -23,56 +23,30 @@ module.exports = function(app) {
     .put(smartIrrigation.update_sensor)
     /*.delete(smartIrrigation.delete_sensor)*/;
 
-  app.route('/sensors-history')
-    .get(function(req,res){
-      var query = {
-        crop_user_id: req.param('crop_user_id')      
-      }
-      sensorHistoryManagement.getSensorsHistory(query,function(err,sensorsHistory){
-        if (err)
-          res.status(500).send(err.message);
-        else
-          res.status(200).json(sensorsHistory);
-      });
-      
-    })
-    .post(function(req,res){
-      var query = {
-        topic : req.param('topic'),
-        value: req.param('value')      
-      }
-      sensorHistoryManagement.createSensorHistoryFromJson(query, function(err) {
-          if (err)
-            res.status(500).send(err.message);
-          else
-            res.status(200).json("Sensor history created succesfully");
-      })
-      
-    });
 };
 
 
-client.on('connect', function () {
-  console.log("Start mqtt")
+// client.on('connect', function () {
+//   console.log("Start mqtt")
 
-  // subscribe topics
-  for (var i = 0; i < topics.length; i++) {
-    client.subscribe(topics[i])
-  }
-})
+//   // subscribe topics
+//   for (var i = 0; i < topics.length; i++) {
+//     client.subscribe(topics[i])
+//   }
+// })
 
-client.on('message', function (topic, message) {
-  // get message from the subscribed topics
+// client.on('message', function (topic, message) {
+//   // get message from the subscribed topics
 
-  if (topics[3] == topic) {
-    waterHistoryManagement.createWaterHistory(message.toString(), function(err) {
-      console.log("MQTT createWaterHistory error");
-      console.log(err);
-    })
-  } else {
-    sensorHistoryManagement.createSensorHistory(topic.toString(), message.toString(), function(err) {
-      console.log("MQTT createSensorHistory error");
-      console.log(err);
-    })
-  }
-})
+//   if (topics[3] == topic) {
+//     waterHistoryManagement.createWaterHistory(message.toString(), function(err) {
+//       console.log("MQTT createWaterHistory error");
+//       console.log(err);
+//     })
+//   } else {
+//     sensorHistoryManagement.createSensorHistory(topic.toString(), message.toString(), function(err) {
+//       console.log("MQTT createSensorHistory error");
+//       console.log(err);
+//     })
+//   }
+// })
