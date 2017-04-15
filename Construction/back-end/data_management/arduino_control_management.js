@@ -1,10 +1,14 @@
 var mongoose = require('mongoose');
 var schema = require('./schema');
 var common = require('./common');
+var cropUserManagement = require('../data_management/crop_user_management');
 var ArduinoControl = schema.ArduinoControl;
 
 
 exports.getArduinoControl = function (query, callback){
+	if(query.crop_user_id == null || query.crop_user_id == undefined){
+		query.crop_user_id = cropUserManagement.queryCropUserId();
+	}
 	ArduinoControl.findOne(query, function(err, arduinoControl) {
       callback(err,arduinoControl);
     });
