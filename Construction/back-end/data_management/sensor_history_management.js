@@ -15,18 +15,18 @@ var field3Queue = thingSpeak.field3Queue;
 var topics = common.mqtt_topics;
 
 function createSensorHistory (cropUserId, sensorType, sensorData, callback) {
-    cb = callback;
+    
     var sensorId = querySensorId(sensorType)
     if(cropUserId == null || cropUserId == undefined){
       cropUserId = queryCropUserId();
     }
     if (null == sensorId) {
-        cb('[createSensorHistory] sensorId undefined');
+        callback(new Error('[createSensorHistory] sensorId undefined'));
         return;
     }
 
     if (null == cropUserId) {
-        cb('[createSensorHistory] cropUserId undefined');
+        callback(new Error('[createSensorHistory] cropUserId undefined'));
         return;
     }
 
@@ -36,10 +36,7 @@ function createSensorHistory (cropUserId, sensorType, sensorData, callback) {
         return callback(new Error("Sensor history not created"));
     }
 
-    sensorHistoryManagement.save(function(err) {
-        cb(err);
-
-    })
+    sensorHistoryManagement.save(callback);
 }
 
 function createSensorHistoryFromJson (query,callback){
