@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var schema = require('./schema');
-
 var CropUser = schema.CropUser;
 
 exports.queryCropUserId = function (req, res) {

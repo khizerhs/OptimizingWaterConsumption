@@ -14,10 +14,12 @@ var field2Queue = thingSpeak.field2Queue;
 var field3Queue = thingSpeak.field3Queue;
 var topics = common.mqtt_topics;
 
-exports.createSensorHistory = function(sensorType, sensorData, callback) {
+function createSensorHistory (cropUserId, sensorType, sensorData, callback) {
     cb = callback;
-    var sensorId = querySensorId(sensorType), cropUserId = queryCropUserId();
-
+    var sensorId = querySensorId(sensorType)
+    if(cropUserId == null || cropUserId == undefined){
+      cropUserId = queryCropUserId();
+    }
     if (null == sensorId) {
         cb('[createSensorHistory] sensorId undefined');
         return;
@@ -31,14 +33,17 @@ exports.createSensorHistory = function(sensorType, sensorData, callback) {
     var sensorHistoryManagement = createSensorHistoryManagement(sensorType, sensorData, sensorId, cropUserId);
     
     if (null == sensorHistoryManagement) {
-        return;
+        return callback(new Error("Sensor history not created"));
     }
 
     sensorHistoryManagement.save(function(err) {
-        if (err) {
-            cb(err);
-        } 
+        cb(err);
+
     })
+}
+
+function createSensorHistoryFromJson (query,callback){
+  createSensorHistory(query.crop_user_id,query.topic,query.value,callback);
 }
 
 function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
@@ -73,18 +78,28 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
 
 // Sensor History REST API
 
-exports.all_sensor_history = function(req, res) {
-  SensorHistoryManagement.find({}).sort('-creation_date').limit(10).exec(function(err, sensorHistory) {
-    if (err)
-      res.send(err);
-    else
-      res.json(sensorHistory);
-  });
+function getSensorsHistory(query,callback) {
+
+  if((query.start == undefined || query.start == null) && (query.end == null || query.end == undefined)){
+    SensorHistoryManagement.find(query).sort('-creation_date').exec(function(err, sensorHistory) {
+      callback(err,sensorHistory);
+    });
+  }else{
+    console.log("Date range");
+    SensorHistoryManagement.find({crop_user_id : query.crop_user_id, 
+      creation_date: {
+          $gte: moment(query.start, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format(),
+          $lt: moment(query.end, 'MM-DD-YYYY HH:mm').tz('America/Los_Angeles').format()
+      }
+    }).sort('-creation_date').exec(function(err, sensorHistory) {
+      callback(err,sensorHistory);
+    });
+  }
 };
 
 
 
-exports.read_sensor_history = function(req, res) {
+function read_sensor_history (req, res) {
   SensorHistoryManagement.findById(req.params.sensorId, function(err, sensorHistory) {
     if (sensorHistory == undefined || sensorHistory == null)
       res.status(404).json({message: 'WaterConsumptionHistory record Not found'});
@@ -95,7 +110,7 @@ exports.read_sensor_history = function(req, res) {
   });
 };
 
-exports.read_sensor_history_range = function(req, res) {
+function read_sensor_history_range (req, res) {
   SensorHistoryManagement.find({sensor_id: req.param('sensorId'), crop_user_id: req.param('cropUserId'), 
     creation_date: {$gte: req.param('start'), $lt:req.param('end')}}, function(err, sensorHistory) {
       if (sensorHistory == undefined || sensorHistory == null)
@@ -107,4 +122,12 @@ exports.read_sensor_history_range = function(req, res) {
       }
     }
   )
+}
+
+module.exports = {
+  read_sensor_history_range: read_sensor_history_range,
+  read_sensor_history: read_sensor_history,
+  getSensorsHistory : getSensorsHistory,
+  createSensorHistoryFromJson : createSensorHistoryFromJson,
+  createSensorHistory : createSensorHistory
 }

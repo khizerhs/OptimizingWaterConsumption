@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(app) {
-  var smartIrrigation = require('../data_management/water_history_management');
+  var waterHistoryManagement = require('../data_management/water_history_management');
   var user_application_logic = require('../logic/user_application_logic');
 
   
@@ -11,14 +11,27 @@ module.exports = function(app) {
 			start: req.param('start'),
 			end : req.param('end')
 		}
-		smartIrrigation.list_wchs(query,function(err,wch){
+		waterHistoryManagement.list_wchs(query,function(err,wch){
 			if (err)
 			  res.send(err);
 			else
 			  res.json(wch);
 		});
 		
-	});
+	})
+	.post(function(req,res){
+	  var query = {
+      	crop_user_id : req.param('crop_user_id'),
+        value: req.param('value')      
+      }
+      waterHistoryManagement.createWaterHistory(query, function(err){
+          if (err)
+            res.status(500).send(err.message);
+          else
+            res.status(201).json("Water history created succesfully");
+      })
+      
+    });
 	
 	app.route('/water-history/total-consumption')
     .get(function(req,res){
@@ -36,15 +49,15 @@ module.exports = function(app) {
 		
 	});
 	
-	//(smartIrrigation.list_wchs);
-    //.post(smartIrrigation.create_crop);
+	//(waterHistoryManagement.list_wchs);
+    //.post(waterHistoryManagement.create_crop);
 
 
   app.route('/water-history/:cropUserId')
-    .get(smartIrrigation.read_wch)
-    .put(smartIrrigation.update_wch)
-    /*.delete(smartIrrigation.delete_wch)*/;
+    .get(waterHistoryManagement.read_wch)
+    .put(waterHistoryManagement.update_wch)
+    /*.delete(waterHistoryManagement.delete_wch)*/;
 
   app.route('/wh-date')
-    .get(smartIrrigation.read_wch_date);
+    .get(waterHistoryManagement.read_wch_date);
 };

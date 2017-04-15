@@ -104,6 +104,17 @@ var machineLearningSchema = new mongoose.Schema({
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
+var arduinoControlSchema = new mongoose.Schema({
+  crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
+  valve_control : { type:String},
+  temp_control : { type:String},
+  hum_control : { type:String},
+  soil_control : { type:String},
+  soil_moisture_low_range : { type:String},
+  water_pouring_time : { type:String},
+  creation_date: {type: Date, default: Date.now}
+}, { autoIndex: true });
+
 exports.Crop = mongoose.model('Crop', cropSchema);
 exports.CropStage = mongoose.model('CropStage', cropSchema);
 exports.User = mongoose.model('User', userSchema);
@@ -114,3 +125,5 @@ exports.WaterConsumptionHistory = mongoose.model('WaterConsumption', waterConsum
 exports.WeatherHistory= mongoose.model('WeatherHistory', weatherHistorySchema);
 exports.WaterConsumptionPrediction= mongoose.model('waterConsumptionPrediction', waterConsumptionPredictionSchema);
 exports.MachineLearning = mongoose.model('MachineLearning', machineLearningSchema);
+exports.ArduinoControl = mongoose.model('ArduinoControl', arduinoControlSchema);
+

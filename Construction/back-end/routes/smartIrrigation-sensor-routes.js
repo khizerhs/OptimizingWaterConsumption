@@ -1,4 +1,14 @@
 'use strict';
+// Put MQTT consumer here temporary
+var sensorHistoryManagement = require('../data_management/sensor_history_management')
+var waterHistoryManagement = require('../data_management/water_history_management')
+var common = require('../data_management/common')
+
+var mqtt = require('mqtt')
+var client = mqtt.connect(process.env.mqttconnectionstring)
+
+var topics = common.mqtt_topics
+
 module.exports = function(app) {
   var smartIrrigation = require('../data_management/sensor_management');
 
@@ -12,17 +22,35 @@ module.exports = function(app) {
     .get(smartIrrigation.read_sensor)
     .put(smartIrrigation.update_sensor)
     /*.delete(smartIrrigation.delete_sensor)*/;
+
+  app.route('/sensors-history')
+    .get(function(req,res){
+      var query = {
+        crop_user_id: req.param('crop_user_id')      
+      }
+      sensorHistoryManagement.getSensorsHistory(query,function(err,sensorsHistory){
+        if (err)
+          res.status(500).send(err.message);
+        else
+          res.status(200).json(sensorsHistory);
+      });
+      
+    })
+    .post(function(req,res){
+      var query = {
+        topic : req.param('topic'),
+        value: req.param('value')      
+      }
+      sensorHistoryManagement.createSensorHistoryFromJson(query, function(err) {
+          if (err)
+            res.status(500).send(err.message);
+          else
+            res.status(200).json("Sensor history created succesfully");
+      })
+      
+    });
 };
 
-// Put MQTT consumer here temporary
-var sensorHistoryManagement = require('../data_management/sensor_history_management')
-var waterHistoryManagement = require('../data_management/water_history_management')
-var common = require('../data_management/common')
-
-var mqtt = require('mqtt')
-var client = mqtt.connect(process.env.mqttconnectionstring)
-
-var topics = common.mqtt_topics
 
 client.on('connect', function () {
   console.log("Start mqtt")

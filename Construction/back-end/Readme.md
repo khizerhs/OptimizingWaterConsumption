@@ -87,7 +87,17 @@ Expected Output:
     Status Code: 200 OK
     Response Body:
     [{"_id":"58998a410494c5379542d348","name":"temperature","description":"test","__v":0}]
-	
+
+## Water consumption
+### Get Sensor history
+
+    GET https://sjsusmartfarm-backend.herokuapp.com/sensors-history?crop_user_id=XXXX&start=MM-DD-YYYY HH:MM&end=MM-DD-YYYY HH:MM
+
+    ####Params
+        crop_user_id (mandatory)
+
+Expected Output:
+
 ## Water consumption
 ### Get Water history
 

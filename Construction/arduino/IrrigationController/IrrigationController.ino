@@ -2,8 +2,7 @@
 #include <UnoWiFiDevEd.h>
 #include <dht.h>
 
-//#define CONNECTOR     "rest" 
-//#define SERVER_ADDR   "api.thingspeak.com"
+
 //#define APIKEY_THINGSPEAK  "ORAYGP0SOPO0J1IB"
 
 #define DHTPIN 6     // what digital pin we're connected to
@@ -55,21 +54,28 @@ void setup() {
 }
 
 void loop() {
-    //Ciao.begin();
+
+    //soilMoistureLowRange = atoi(makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=soil_moisture_low_range","GET"));
+    //waterPouringTime = atoi(makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=water_pouring_time","GET"));
+    char* valveControl = makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=valve_control","GET");
+    
+    
     int chk = DHT.read22(DHTPIN);
     //String uri;
     if(chk == DHTLIB_OK){
         Serial.println("Temp/Hum sensor OK,\t");
-        makeRequestMQTT("arduino-hum",String(DHT.humidity,1));
-        makeRequestMQTT("arduino-temp",String(DHT.temperature));
+        makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-temp&value="+String(DHT.temperature),"POST");
+        //makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-hum&value="+String(DHT.humidity),"POST");
+        //makeRequestMQTT("arduino-hum",String(DHT.humidity,1));
+        //makeRequestMQTT("arduino-temp",String(DHT.temperature));
     }
     
     Serial.println();
     Serial.print("Humidity: ");           
-    Serial.print(String(DHT.humidity,1));
+    //Serial.print(String(DHT.humidity,1));
     Serial.println("%"); 
     Serial.print("Temperature: ");           
-    Serial.print(String(DHT.temperature,1));
+    //Serial.print(String(DHT.temperature,1));
     Serial.println("C"); 
     
     unsigned int state = digitalReadOutputPin(SOLENOIDPIN);
@@ -77,31 +83,19 @@ void loop() {
     //***************************************************////
     //************GET USER PARAMETERS****************///
     //***************************************************///
-    //Get the soil moisture lowerLimit
-    String message = getMessageMQTT("lowerLimit");
-    if(message != ""){
-      soilMoistureLowRange = message.toInt();
-    }
-    //Publish the current soil moisture lower range
-    makeRequestMQTT("currentLowerLimit",String(soilMoistureLowRange));
-    //Get the pouring time
-    message = getMessageMQTT("pouringTime");
-    if(message != ""){
-      waterPouringTime = message.toInt();
-    }
-    //Publish the current pouring time
-    makeRequestMQTT("currentPouringTime",String(waterPouringTime));
+    
     //***************************************************////
     //************GET USER PARAMETERS****************///
     //***************************************************///
-
-    float SoilMoistureReading = getAverageReading();
-    makeRequestMQTT("arduino-soil",String(SoilMoistureReading));
-    Serial.println("Soil moisture reading: "+String(SoilMoistureReading));
-    Serial.println("Soil moisture range limit: "+String(soilMoistureLowRange));
-    Serial.println("Current pouring time: "+String(waterPouringTime));
+    float SoilMoistureReading;
+    if(valveControl != "" || valveControl == "off"){
+          SoilMoistureReading = getAverageReading();
+    }
     
-    while(SoilMoistureReading > 0 && SoilMoistureReading < soilMoistureLowRange && SoilMoistureReading < 45){
+    makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-soil&value="+String(SoilMoistureReading),"POST");
+
+    
+    while((valveControl != "" && valveControl == "on" ) || (SoilMoistureReading > 0 && SoilMoistureReading < soilMoistureLowRange && SoilMoistureReading < 45)){
         state = digitalReadOutputPin(SOLENOIDPIN);
         if(state == LOW){
           digitalWrite(SOLENOIDPIN, HIGH);
@@ -121,17 +115,19 @@ void loop() {
           Serial.print(totalMilliLitres);
           Serial.println("mL"); 
         }
-        SoilMoistureReading = getAverageReading();
+        
+        if(valveControl != NULL && valveControl == "off"){
+          SoilMoistureReading = getAverageReading();
+        }
 
-        Serial.println("Temp/Hum sensor OK,\t");
-        makeRequestMQTT("arduino-hum",String(DHT.humidity,1));
-        makeRequestMQTT("arduino-temp",String(DHT.temperature));
-    
-        makeRequestMQTT("arduino-soil",String(SoilMoistureReading));
+        //params = makeRequest("arduino-control?crop_user_id=58caea3116a1664e9fdb71d7","GET");
+        //StaticJsonBuffer<200> jsonBuffer;
+        //arduino_params = jsonBuffer.parseObject(params);
+        valveControl = makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=valve_control","GET");
     }
     
     if(totalMilliLitres > 0){
-      makeRequestMQTT("arduino-water",String(totalMilliLitres));
+      makeRequest("/water-history?crop_user_id=58caea3116a1664e9fdb71d7&value="+String(totalMilliLitres),"POST");
     }
     
     delay(5000); // Thinkspeak policy
@@ -140,7 +136,7 @@ void loop() {
 
 double getAverageReading(){
   double soilMoistureReadings = 0.0;
-  unsigned int numIter = 60;
+  unsigned int numIter = 1;
   for(int i = 0; i < numIter; i++){
     soilMoistureReadings += readSoilMoisture();
     delay(5000);
@@ -150,52 +146,52 @@ double getAverageReading(){
 
 }
 
-void makeRequestMQTT(char* topic, String dataRequest){
-    //Ciao.print("Sending request to thingspeak ");
-    //Ciao.println(dataRequest);
-    Ciao.println("Send data on ThingSpeak Channel"); 
-      
-    CiaoData data = Ciao.write("mqtt", topic, dataRequest);
+//void makeRequestMQTT(char* topic, String dataRequest){
+//    //Ciao.print("Sending request to thingspeak ");
+//    //Ciao.println(dataRequest);
+////    Ciao.println("Send data on ThingSpeak Channel"); 
+////      
+//    CiaoData data = Ciao.write("mqtt", topic, dataRequest);
+//
+//    if (!data.isEmpty()){
+//      Serial.println( "State: " + String (data.get(1)) );
+//      Serial.println( "Response: " + String (data.get(2)) );
+//      Ciao.println( "State: " + String (data.get(1)) );
+//      Ciao.println( "Response: " + String (data.get(2)) );      
+//    }
+//    else{ 
+//      Ciao.println("Write Error");
+//    }    
+//}
 
+
+char* makeRequest(String resource, char* method){
+
+    CiaoData data = Ciao.write("rest", "sjsusmartfarm-backend.herokuapp.com", resource,method);
+    delay(500);
     if (!data.isEmpty()){
-      Serial.println( "State: " + String (data.get(1)) );
-      Serial.println( "Response: " + String (data.get(2)) );
-      Ciao.println( "State: " + String (data.get(1)) );
-      Ciao.println( "Response: " + String (data.get(2)) );
+      //Ciao.println( "State: " + String (data.get(1)) );
+      //Ciao.println( "Response: " + String (data.get(2)) );
+      Serial.println(data.get(1) );
+      Serial.println( data.get(2));
+      return data.get(2);
     }
-    else{ 
-      Ciao.println("Write Error");
-    }    
+    else{
+      Ciao.println ("Write Error");
+      Serial.println ("Write Error");
+    }
+    return "";
 }
 
-/*
-void makeRequest(String dataRequest){
-    //Ciao.print("Sending request to thingspeak ");
-    Serial.println(dataRequest);
-    Ciao.println("Send data on ThingSpeak Channel"); 
-      
-    CiaoData data = Ciao.write(CONNECTOR, SERVER_ADDR, dataRequest);
-
-    if (!data.isEmpty()){
-      Serial.println( "State: " + String (data.get(1)) );
-      Serial.println( "Response: " + String (data.get(2)) );
-      Ciao.println( "State: " + String (data.get(1)) );
-      Ciao.println( "Response: " + String (data.get(2)) );
-    }
-    else{ 
-      Ciao.println("Write Error");
-    }    
-}*/
-
-String getMessageMQTT(char* topic){
-  CiaoData data = Ciao.read("mqtt", topic); 
-  if (!data.isEmpty()){
-    Serial.println("Data received"+String(data.get(2)));
-    return String(data.get(2));
-  }
-
-  return "";
-}
+//String getMessageMQTT(char* topic){
+//  CiaoData data = Ciao.read("mqtt", topic); 
+//  if (!data.isEmpty()){
+//    Serial.println("Data received"+String(data.get(2)));
+//    return String(data.get(2));
+//  }
+//
+//  return "";
+//}
 
 float readSoilMoisture(){
   float Count = analogRead(A2);

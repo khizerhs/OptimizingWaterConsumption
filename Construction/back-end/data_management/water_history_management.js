@@ -10,33 +10,30 @@ var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
 var cb;
 
-exports.createWaterHistory = function (waterData, callback){
+exports.createWaterHistory = function (query, callback){
     cb = callback;
-    var cropUserId = queryCropUserId();
-        
+    var cropUserId = query.crop_user_id
+    if(cropUserId == null || cropUserId == null){
+      cropUserId = queryCropUserId();
+    }
     if (null == cropUserId) {
-        cb('[createWaterHistory] cropUserId undefined');
-        return;
+        return cb(new Error('[createWaterHistory] cropUserId undefined'));
+        
     }
 
-    var waterHistoryManagement = createWaterHistoryManagement(waterData, cropUserId);
+    var waterHistoryManagement = createWaterHistoryManagement(query.value, cropUserId);
     
     if (null == waterHistoryManagement) {
         return;
     }
 
-    waterHistoryManagement.save(function (err) {
-        if (err) {
-            cb(err);
-        }
-    });
+    waterHistoryManagement.save(cb);
 }
 
 function createWaterHistoryManagement(data, cropUserId) {
 	
   if (!data || 0 === data.length) {
-      cb('[createWaterHistoryManagement] water consumption got empty string')
-      return null;
+      cb(new Error('[createWaterHistoryManagement] water consumption got empty string'));
   }
 	var bayTime = common.getBayTime();
   var field4 = 'field4=' + data;
