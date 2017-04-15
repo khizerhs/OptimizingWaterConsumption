@@ -5,6 +5,7 @@ var waterHistoryManagement = require('../data_management/water_history_managemen
 var common = require('../data_management/common')
 
 var mqtt = require('mqtt')
+process.env.mqttconnectionstring = "mqtt://35.165.56.98:1883"
 var client = mqtt.connect(process.env.mqttconnectionstring)
 
 var topics = common.mqtt_topics
@@ -26,27 +27,36 @@ module.exports = function(app) {
 };
 
 
-// client.on('connect', function () {
-//   console.log("Start mqtt")
+client.on('connect', function () {
+  console.log("Start mqtt")
 
-//   // subscribe topics
-//   for (var i = 0; i < topics.length; i++) {
-//     client.subscribe(topics[i])
-//   }
-// })
+  // subscribe topics
+  for (var i = 0; i < topics.length; i++) {
+    client.subscribe(topics[i])
+  }
+})
 
-// client.on('message', function (topic, message) {
-//   // get message from the subscribed topics
+client.on('message', function (topic, message) {
+  // get message from the subscribed topics
 
-//   if (topics[3] == topic) {
-//     waterHistoryManagement.createWaterHistory(message.toString(), function(err) {
-//       console.log("MQTT createWaterHistory error");
-//       console.log(err);
-//     })
-//   } else {
-//     sensorHistoryManagement.createSensorHistory(topic.toString(), message.toString(), function(err) {
-//       console.log("MQTT createSensorHistory error");
-//       console.log(err);
-//     })
-//   }
-// })
+  if (topics[3] == topic) {
+    console.log("Water received");
+    var query = {
+        value: message.toString()      
+    }
+    waterHistoryManagement.createWaterHistory(query, function(err) {
+        if(err){
+          console.log(err);
+        }else
+          console.log("MQTT sensor history created on topic: "+topic.toString());
+    })
+  } else {
+    console.log("Sensor received");
+    sensorHistoryManagement.createSensorHistory(null,topic.toString(), message.toString(), function(err) {
+      if(err){
+        console.log(err);
+      }else
+        console.log("MQTT sensor history created on topic: "+topic.toString());
+    })
+  }
+})
