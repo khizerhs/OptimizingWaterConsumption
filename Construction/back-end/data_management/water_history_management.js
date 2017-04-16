@@ -9,6 +9,8 @@ var waterConsumptionHistory = schema.WaterConsumptionHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
 var cb;
+var last_water_update_time = null;
+var water_update_diff = 60000 //60000 is 1 min
 
 exports.createWaterHistory = function (query, callback){
     cb = callback;
@@ -35,7 +37,23 @@ function createWaterHistoryManagement(data, cropUserId) {
   if (!data || 0 === data.length) {
       cb(new Error('[createWaterHistoryManagement] water consumption got empty string'));
   }
+
 	var bayTime = common.getBayTime();
+  
+  // Remove duplicate message since water consumption doesn't update within 1 min
+  if (null != last_water_update_time && 
+    bayTime - last_water_update_time <= water_update_diff) {
+    
+    console.log('[createWaterHistoryManagement]: timestamp difference shorter than ' + parseInt(water_update_diff))
+    var diff = bayTime - last_water_update_time
+    console.log('Diff: ' + diff)
+    
+    return null
+  }
+
+  console.log('[createWaterHistoryManagement]: save water history: ' + data)
+  last_water_update_time = bayTime
+
   var field4 = 'field4=' + data;
   field4Queue.push(field4);
   return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data, creation_date:bayTime});
@@ -154,5 +172,5 @@ waterConsumptionHistory.find({
 
 exports.ws_test = function(message) {
   console.log('exports.ws_test')
-  ws_emit('ws_test', queryCropUserId(), message)
+  ws_emit(queryCropUserId(), message)
 }
