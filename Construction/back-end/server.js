@@ -5,12 +5,20 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   cors = require('cors');
 
-//To avoid the heroku app going to sleep :)
+// To avoid the heroku app going to sleep :)
 var http = require("http");
 setInterval(function() {
 	console.log("App ping");
     http.get("http://sjsusmartfarm-backend.herokuapp.com/");
 }, 300000); // every 5 minutes (300000)
+
+app.set('port', port);
+
+var server = http.createServer(app);
+app.io = require('socket.io')();
+app.io.attach(server);
+
+server.listen(port);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.connectionstring, function (err, res) {
@@ -60,6 +68,7 @@ var sensorHistory_routes = require('./routes/smartIrrigation-sensorHistory-route
 var crop_user_routes = require('./routes/smartIrrigation-crop-user-routes');
 var weather_history_routes = require('./routes/smartIrrigation-weatherHistory-routes')
 var arduino_control_routes = require('./routes/smartIrrigation-arduinoControl-routes')
+var websocket = require('./socket/smartIrrigation-websocket')
 
 sensor_routes(app);
 user_routes(app);
@@ -70,8 +79,7 @@ crop_user_routes(app);
 waterConsumptionPrediction_routes(app);
 weather_history_routes(app)
 arduino_control_routes(app)
-
-app.listen(port);
+websocket.start_ws(app.io)
 
 module.exports = app
 console.log('RESTful API server started on: ' + port);

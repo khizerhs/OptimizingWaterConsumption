@@ -28,7 +28,8 @@
     "mongoose": ">=4.1.11",
     "mqtt": "^2.4.0",
     "node-rest-client": "^2.5.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "socket.io": "^1.7.3"
   },
   "scripts": {
     "start": "node Construction/back-end/server.js",
