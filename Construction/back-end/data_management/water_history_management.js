@@ -3,8 +3,8 @@ var moment = require('moment-timezone');
 var schema = require('./schema');
 var thingSpeak = require('../data_management/thing_speak');
 var cropUserManagement = require('../data_management/crop_user_management');
-var thingSpeak = require('../data_management/thing_speak');
 var common = require('./common');
+var ws_emit = require('../socket/smartIrrigation-websocket').emit_ws;
 var waterConsumptionHistory = schema.WaterConsumptionHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
@@ -152,5 +152,7 @@ waterConsumptionHistory.find({
 
 };
 
-
-
+exports.ws_test = function(message) {
+  console.log('exports.ws_test')
+  ws_emit('ws_test', queryCropUserId(), message)
+}

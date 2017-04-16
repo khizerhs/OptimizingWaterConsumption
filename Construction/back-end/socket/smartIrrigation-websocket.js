@@ -5,7 +5,7 @@ var crop_user = ''
 exports.start_ws = function(ws) {
     ws.on('connection', function(client) {  
         console.log('Websocket client connected...');
-        // ws_client = client
+        ws_client = client
 
         // server receive
         client.on('register', function(crop_user) {
