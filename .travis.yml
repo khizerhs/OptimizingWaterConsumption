@@ -15,5 +15,5 @@ notifications:
       - saishashank.vadali@sjsu.edu
       - khizerhasan.syed@sjsu.edu
       - fabrizio.pisciottasanabria@sjsu.edu
-    on_success: always
+    on_success: change
     on_failure: always

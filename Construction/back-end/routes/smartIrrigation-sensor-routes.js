@@ -53,7 +53,8 @@ client.on('message', function (topic, message) {
           console.log("MQTT sensor history created on topic: "+topic.toString());
     })
   } else if ('websocket_test' == topic) {
-    ws.ws_test(message.toString())
+    console.log('websocket_test')
+    waterHistoryManagement.ws_test(message.toString())
   }else {
     console.log("Sensor received");
     sensorHistoryManagement.createSensorHistory(null,topic.toString(), message.toString(), function(err) {
