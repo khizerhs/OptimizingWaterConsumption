@@ -44,7 +44,7 @@ module.exports = function(app) {
           res.status(404).send()
         }
         
-        mqtt_client.publish('mqtt_test', req.param('switch'), {retain: true})
+        mqtt_client.publish('valve-control', req.param('switch'), {retain: true})
         res.status(200).send()
     })  
 };
