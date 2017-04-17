@@ -48,7 +48,7 @@ function createWaterHistoryManagement(data, cropUserId, callback) {
     var diff = bayTime - last_water_update_time
     console.log('Diff: ' + diff)
     
-    return callback(new Error('[createWaterHistoryManagement]: timestamp difference shorter than ' + parseInt(water_update_diff))
+    return callback(new Error('[createWaterHistoryManagement]: timestamp difference shorter than ' + parseInt(water_update_diff)))
   }
 
   console.log('[createWaterHistoryManagement]: save water history: ' + data)
