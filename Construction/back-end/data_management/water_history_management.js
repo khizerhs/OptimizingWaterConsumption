@@ -10,7 +10,7 @@ var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
 var cb;
 var last_water_update_time = null;
-var water_update_diff = 60000 //60000 is 1 min
+var water_update_diff = 5000 //5000 is 5 secs
 
 exports.createWaterHistory = function (query, callback){
     cb = callback;
