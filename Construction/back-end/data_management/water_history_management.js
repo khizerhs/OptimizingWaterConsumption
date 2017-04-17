@@ -24,10 +24,11 @@ exports.createWaterHistory = function (query, callback){
     }
 
     createWaterHistoryManagement(query.value, cropUserId, function(err, waterHistoryManagement){
-      if (err)
+      if (err) {
         return callback(err)
-  
-      waterHistoryManagement.save(callback);
+      } else {
+        waterHistoryManagement.save(callback);
+      }
     });
     
 }
@@ -35,7 +36,7 @@ exports.createWaterHistory = function (query, callback){
 function createWaterHistoryManagement(data, cropUserId, callback) {
 	
   if (!data || 0 === data.length) {
-      callback(new Error('[createWaterHistoryManagement] water consumption got empty string'));
+    return callback(new Error('[createWaterHistoryManagement] water consumption got empty string'));
   }
 
 	var bayTime = common.getBayTime();
