@@ -69,6 +69,7 @@ var crop_user_routes = require('./routes/smartIrrigation-crop-user-routes');
 var weather_history_routes = require('./routes/smartIrrigation-weatherHistory-routes')
 var arduino_control_routes = require('./routes/smartIrrigation-arduinoControl-routes')
 var websocket = require('./socket/smartIrrigation-websocket')
+var mqtt_module = require('./mqtt/mqtt_module')
 
 sensor_routes(app);
 user_routes(app);

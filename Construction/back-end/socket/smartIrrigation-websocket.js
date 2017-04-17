@@ -1,31 +1,26 @@
 'use strict';
-var ws_clients = null;
+var ws_clients = [];
 var crop_user = ''
 
 exports.start_ws = function(ws) {
     ws.on('connection', function(client) {  
         console.log('Websocket client connected...');
-        ws_clients = client
-
+        ws_clients.push(client)
+        
         // server receive
         client.on('register', function(crop_user) {
-            console.log(crop_user)
-            ws_clients.emit("ws_test", crop_user)
         });
 
     });
 };
 
-exports.emit_ws = function(topic, cuser, message) {
-    if (null == ws_clients) {
-        console.log('ws_client null')
+exports.emit_ws = function(cuser, message) {
+    if (0 === ws_clients.length) {
+        console.log('ws_client empty')
         return
     }
 
-    // if (cuser != crop_user) {
-    //     return
-    // }
-
-    console.log('emit ' + topic, message)
-    ws_clients.emit(topic, message)
+    for (var i = 0; i < ws_clients.length; i++) {
+        ws_clients[i].emit(cuser, message)
+    }
 }

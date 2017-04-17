@@ -1,7 +1,7 @@
 'use strict';
 module.exports = function(app) {
   var arduinoControlManagement = require('../data_management/arduino_control_management');
-
+  var mqtt_client = require('../mqtt/mqtt_module').mqtt_client
 
   app.route('/arduino-control')
     .get(function(req,res){
@@ -36,5 +36,15 @@ module.exports = function(app) {
       });
     })
 
-    
+  app.route('/arduino_valve_control')
+    .put(function(req, res) {
+        console.log('/arduino_valve_control ' + req.param('switch'))
+        
+        if (null === mqtt_client) {
+          res.status(404).send()
+        }
+        
+        mqtt_client.publish('mqtt_test', req.param('switch'), {retain: true})
+        res.status(200).send()
+    })  
 };
