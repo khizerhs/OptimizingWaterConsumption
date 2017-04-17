@@ -26,7 +26,8 @@ exports.createWaterHistory = function (query, callback){
     var waterHistoryManagement = createWaterHistoryManagement(query.value, cropUserId);
     
     if (null == waterHistoryManagement) {
-        return;
+      console.log('[createWaterHistory] waterHistoryManagement is null, return')
+      return cb(new Error('[createWaterHistory] waterHistoryManagement is null, return'));
     }
 
     waterHistoryManagement.save(cb);
@@ -34,9 +35,9 @@ exports.createWaterHistory = function (query, callback){
 
 function createWaterHistoryManagement(data, cropUserId) {
 	
-  if (!data || 0 === data.length) {
-      cb(new Error('[createWaterHistoryManagement] water consumption got empty string'));
-  }
+  // if (!data || 0 === data.length) {
+  //     cb(new Error('[createWaterHistoryManagement] water consumption got empty string'));
+  // }
 
 	var bayTime = common.getBayTime();
   
@@ -53,7 +54,7 @@ function createWaterHistoryManagement(data, cropUserId) {
 
   console.log('[createWaterHistoryManagement]: save water history: ' + data)
   last_water_update_time = bayTime
-
+  
   var field4 = 'field4=' + data;
   field4Queue.push(field4);
   return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data, creation_date:bayTime});
