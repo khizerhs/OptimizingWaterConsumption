@@ -20,7 +20,8 @@ var userSchema = new mongoose.Schema({
   admin : { type: Boolean, default : false},
   phone: { type: String, required : true},
   login: { type: String, required : true},
-  pass : {type : String, required : true}
+  pass : {type : String, required : true},
+  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
 }, { autoIndex: true });
 
 var sensorSchema = new mongoose.Schema({
