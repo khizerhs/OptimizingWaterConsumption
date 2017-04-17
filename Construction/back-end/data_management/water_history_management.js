@@ -3,12 +3,14 @@ var moment = require('moment-timezone');
 var schema = require('./schema');
 var thingSpeak = require('../data_management/thing_speak');
 var cropUserManagement = require('../data_management/crop_user_management');
-var thingSpeak = require('../data_management/thing_speak');
 var common = require('./common');
+var ws_emit = require('../socket/smartIrrigation-websocket').emit_ws;
 var waterConsumptionHistory = schema.WaterConsumptionHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
 var field4Queue = thingSpeak.field4Queue;
 var cb;
+var last_water_update_time = null;
+var water_update_diff = 5000 //5000 is 5 secs
 
 exports.createWaterHistory = function (query, callback){
     cb = callback;
@@ -21,24 +23,41 @@ exports.createWaterHistory = function (query, callback){
         
     }
 
-    var waterHistoryManagement = createWaterHistoryManagement(query.value, cropUserId);
+    createWaterHistoryManagement(query.value, cropUserId, function(err, waterHistoryManagement){
+      if (err) {
+        return callback(err)
+      } else {
+        waterHistoryManagement.save(callback);
+      }
+    });
     
-    if (null == waterHistoryManagement) {
-        return;
-    }
-
-    waterHistoryManagement.save(cb);
 }
 
-function createWaterHistoryManagement(data, cropUserId) {
+function createWaterHistoryManagement(data, cropUserId, callback) {
 	
   if (!data || 0 === data.length) {
-      cb(new Error('[createWaterHistoryManagement] water consumption got empty string'));
+    return callback(new Error('[createWaterHistoryManagement] water consumption got empty string'));
   }
+
 	var bayTime = common.getBayTime();
+  
+  // Remove duplicate message since water consumption doesn't update within 1 min
+  if (null != last_water_update_time && 
+    bayTime - last_water_update_time <= water_update_diff) {
+    
+    console.log('[createWaterHistoryManagement]: timestamp difference shorter than ' + parseInt(water_update_diff))
+    var diff = bayTime - last_water_update_time
+    console.log('Diff: ' + diff)
+    
+    return callback(new Error('[createWaterHistoryManagement]: timestamp difference shorter than ' + parseInt(water_update_diff)))
+  }
+
+  console.log('[createWaterHistoryManagement]: save water history: ' + data)
+  last_water_update_time = bayTime
+  
   var field4 = 'field4=' + data;
   field4Queue.push(field4);
-  return new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data, creation_date:bayTime});
+  callback(null, new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data, creation_date:bayTime}));
 }
 
 
@@ -152,5 +171,7 @@ waterConsumptionHistory.find({
 
 };
 
-
-
+exports.ws_test = function(message) {
+  console.log('exports.ws_test')
+  ws_emit(queryCropUserId(), message)
+}
