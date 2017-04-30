@@ -40,7 +40,8 @@ var cropUserSchema = new mongoose.Schema({
   field_capacity: { type: String, required : true},
   acreage : { type: String},
   mad : { type: String, required : true},
-  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
+  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}],
+  water_pouring_time : {type:String}
 }, { autoIndex: true });
 
 var sensorHistorySchema = new mongoose.Schema({
