@@ -89,6 +89,13 @@ var waterConsumptionHistorySchema = new mongoose.Schema({
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
+var sensorHistorySchema = new mongoose.Schema({
+  sensor_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Sensor'},
+  crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
+  value:{ type:String , required : true},
+  creation_date: {type: Date, default: Date.now}
+}, { autoIndex: true });
+
 var machineLearningSchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   coeffs:{ type:String , required : true},
