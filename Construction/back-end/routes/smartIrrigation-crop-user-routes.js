@@ -2,10 +2,13 @@
 module.exports = function(app) {
   var cropUserManagement = require('../data_management/crop_user_management');
 
+  app.route('/crop-user')
+    .post(cropUserManagement.create_crop_user)
 
   app.route('/crop-user/:userId')
     .get(cropUserManagement.get_crop_user)
-    .put(cropUserManagement.update_crop_user);
+    .put(cropUserManagement.update_crop_user)
+    .delete(cropUserManagement.delete_crop_user)
 
   app.route('/crop-user-id/:crop_user_id')
   	.get(function(req, res) {
