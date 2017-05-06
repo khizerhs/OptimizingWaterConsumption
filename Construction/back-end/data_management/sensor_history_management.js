@@ -52,7 +52,7 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
         return null;
     }
 
-    ws_emit(cropUserId, sensorId + ',' + data + ',' + bayTime)
+    ws_emit(cropUserId, sensorType + ',' + data + ',' + bayTime)
     
     switch (sensorType) {
         case topics[0]:
