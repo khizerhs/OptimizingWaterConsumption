@@ -9,6 +9,8 @@
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
 #define FLOWMETERPIN       2
+#define CONNECTOR     "rest" 
+#define SERVER_ADDR   "sjsusmartfarm-backend.herokuapp.com"
 dht DHT;
 
 unsigned int SOLENOIDPIN ;
@@ -21,6 +23,8 @@ unsigned long totalMilliLitres;
 unsigned long oldTime;
 unsigned int soilMoistureLowRange = 15;
 unsigned int waterPouringTime = 2000;
+unsigned int numIter = 50;
+String valveControl = ""; 
 
 void setup() {
 
@@ -54,49 +58,51 @@ void setup() {
 }
 
 void loop() {
-
-    //soilMoistureLowRange = atoi(makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=soil_moisture_low_range","GET"));
-    //waterPouringTime = atoi(makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=water_pouring_time","GET"));
-    char* valveControl = makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=valve_control","GET");
-    
-    
+    Serial.println("Starting over");  
     int chk = DHT.read22(DHTPIN);
-    //String uri;
-    if(chk == DHTLIB_OK){
-        Serial.println("Temp/Hum sensor OK,\t");
-        makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-temp&value="+String(DHT.temperature),"POST");
-        //makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-hum&value="+String(DHT.humidity),"POST");
-        //makeRequestMQTT("arduino-hum",String(DHT.humidity,1));
-        //makeRequestMQTT("arduino-temp",String(DHT.temperature));
-    }
-    
-    Serial.println();
-    Serial.print("Humidity: ");           
-    //Serial.print(String(DHT.humidity,1));
-    Serial.println("%"); 
-    Serial.print("Temperature: ");           
-    //Serial.print(String(DHT.temperature,1));
-    Serial.println("C"); 
-    
-    unsigned int state = digitalReadOutputPin(SOLENOIDPIN);
-    totalMilliLitres = 0.0;
-    //***************************************************////
-    //************GET USER PARAMETERS****************///
-    //***************************************************///
-    
-    //***************************************************////
-    //************GET USER PARAMETERS****************///
-    //***************************************************///
-    float SoilMoistureReading;
-    if(valveControl != "" || valveControl == "off"){
-          SoilMoistureReading = getAverageReading();
-    }
-    
-    makeRequest("/sensors-history?crop_user_id=58caea3116a1664e9fdb71d7&topic=arduino-soil&value="+String(SoilMoistureReading),"POST");
 
+    if(chk == DHTLIB_OK){
+        makeRequestMQTT("arduino-hum",String(DHT.humidity,1),3);
+        makeRequestMQTT("arduino-temp",String(DHT.temperature),3);
+//        Serial.println();
+//        Serial.print("Humidity: ");           
+//        Serial.print(String(DHT.humidity,1));
+//        Serial.println("%"); 
+//        Serial.print("Temperature: ");           
+//        Serial.print(String(DHT.temperature,1));
+//        Serial.println("C"); 
+    }
+
+    //***********Receiving arduino control params*****************////
+    Ciao.beginMQTTRequest();
+    String val = getMessageMQTT("lower-limit",5000);
+    if(val != ""){
+      soilMoistureLowRange = val.toInt();
+      //makeRequestMQTT("current-lower-limit",val,1); 
+    }
+    Ciao.beginMQTTRequest();
+    val = getMessageMQTT("pouring-water-time",5000);
+    if(val != ""){
+      waterPouringTime = val.toInt();
+    }
+    Ciao.beginMQTTRequest();
+    val = getMessageMQTT("num-iter",5000);
+    if(val != ""){
+      numIter = val.toInt();
+    }         
+    //***********End of Receiving arduino control params*****************////
     
-    while((valveControl != "" && valveControl == "on" ) || (SoilMoistureReading > 0 && SoilMoistureReading < soilMoistureLowRange && SoilMoistureReading < 45)){
-        state = digitalReadOutputPin(SOLENOIDPIN);
+    float SoilMoistureReading;
+    SoilMoistureReading = getAverageReading();
+    if(valveControl != "on"){
+      Serial.println("Sending arduino soil");       
+      makeRequestMQTT("arduino-soil",String(SoilMoistureReading),3);          
+    }
+    
+    //totalMilliLitres = 0.0;
+    while((valveControl == "on") || (SoilMoistureReading > 0 && SoilMoistureReading < soilMoistureLowRange && SoilMoistureReading < 45)){
+        totalMilliLitres = 0.0;
+        unsigned int state = digitalReadOutputPin(SOLENOIDPIN);
         if(state == LOW){
           digitalWrite(SOLENOIDPIN, HIGH);
           Serial.println("Valve opened!!!");
@@ -115,83 +121,100 @@ void loop() {
           Serial.print(totalMilliLitres);
           Serial.println("mL"); 
         }
-        
-        if(valveControl != NULL && valveControl == "off"){
-          SoilMoistureReading = getAverageReading();
-        }
 
-        //params = makeRequest("arduino-control?crop_user_id=58caea3116a1664e9fdb71d7","GET");
-        //StaticJsonBuffer<200> jsonBuffer;
-        //arduino_params = jsonBuffer.parseObject(params);
-        valveControl = makeRequest("/arduino-control?crop_user_id=58caea3116a1664e9fdb71d7&param=valve_control","GET");
+        if(totalMilliLitres > 0){
+          makeRequestMQTT("arduino-water",String(totalMilliLitres),10);
+        }
+        
+        if(valveControl != "on"){
+          SoilMoistureReading = getAverageReading();
+          if(valveControl != "on"){
+            makeRequestMQTT("arduino-soil",String(SoilMoistureReading),3);   
+          }         
+        }else{
+          val = getMessageMQTT("valve-control",5000);
+          if(val != "")
+            valveControl = val;      
+        }
+        
     }
     
-    if(totalMilliLitres > 0){
-      makeRequest("/water-history?crop_user_id=58caea3116a1664e9fdb71d7&value="+String(totalMilliLitres),"POST");
-    }
+    //if(totalMilliLitres > 0){
+    //  makeRequestMQTT("arduino-water",String(totalMilliLitres),10);
+    //}
     
-    delay(5000); // Thinkspeak policy
+    delay(5000); 
     
 }
 
 double getAverageReading(){
   double soilMoistureReadings = 0.0;
-  unsigned int numIter = 1;
+  
   for(int i = 0; i < numIter; i++){
     soilMoistureReadings += readSoilMoisture();
+    String val = getMessageMQTT("valve-control",5000);
+    if(val == "on"){
+      valveControl = val;
+      return 0.0;
+    } 
     delay(5000);
   }
-  //Serial.println("Soil moisture readings"+String(soilMoistureReadings));
   return soilMoistureReadings/numIter;
-
 }
 
-//void makeRequestMQTT(char* topic, String dataRequest){
-//    //Ciao.print("Sending request to thingspeak ");
-//    //Ciao.println(dataRequest);
-////    Ciao.println("Send data on ThingSpeak Channel"); 
-////      
-//    CiaoData data = Ciao.write("mqtt", topic, dataRequest);
-//
+void makeRequestMQTT(char* topic, String dataRequest, unsigned int times){
+    //Ciao.begin();   
+    Ciao.beginMQTTRequest();
+    for(int i = 0; i < times; i++){
+      CiaoData data = Ciao.write("mqtt", topic, dataRequest);
+  
+      if (!data.isEmpty()){
+        Serial.println( "State: " + String (data.get(1)) );
+        Serial.println( "Response: " + String (data.get(2)) );
+        Ciao.println( "State: " + String (data.get(1)) );
+        Ciao.println( "Response: " + String (data.get(2)) );
+        break;      
+      }
+      else{ 
+        Serial.println("Write Error");
+        Ciao.println("Write Error");
+      }
+    }    
+}
+
+
+//String makeRequest(const String resource, const char* method){
+//    Serial.println(resource);
+//    CiaoData data = Ciao.write(CONNECTOR, SERVER_ADDR, resource);    
 //    if (!data.isEmpty()){
+//      //Ciao.println( "State: " + String (data.get(1)) );
+//      //Ciao.println( "Response: " + String (data.get(2)) );
 //      Serial.println( "State: " + String (data.get(1)) );
 //      Serial.println( "Response: " + String (data.get(2)) );
-//      Ciao.println( "State: " + String (data.get(1)) );
-//      Ciao.println( "Response: " + String (data.get(2)) );      
+//      return String(data.get(2));
 //    }
-//    else{ 
-//      Ciao.println("Write Error");
-//    }    
+//    else{
+//      //Ciao.println ("Write Error");
+//      Serial.println ("Write Error");
+//    }
+//    return "";
 //}
 
-
-char* makeRequest(String resource, char* method){
-
-    CiaoData data = Ciao.write("rest", "sjsusmartfarm-backend.herokuapp.com", resource,method);
-    delay(500);
+String getMessageMQTT(char* topic, unsigned int time){
+  Ciao.beginMQTT();
+  Serial.println("Receiving directives topic:"+String(topic));
+  unsigned long oldTime = millis();
+  while(millis() - oldTime < time){
+    CiaoData data = Ciao.read("mqtt", topic); 
     if (!data.isEmpty()){
-      //Ciao.println( "State: " + String (data.get(1)) );
-      //Ciao.println( "Response: " + String (data.get(2)) );
-      Serial.println(data.get(1) );
-      Serial.println( data.get(2));
-      return data.get(2);
+      Serial.println("Data received"+String(data.get(2)));
+      return String(data.get(2));
     }
-    else{
-      Ciao.println ("Write Error");
-      Serial.println ("Write Error");
-    }
-    return "";
+    //delay(1000);
+  }
+  Serial.println("End topic: "+String(topic));
+  return "";
 }
-
-//String getMessageMQTT(char* topic){
-//  CiaoData data = Ciao.read("mqtt", topic); 
-//  if (!data.isEmpty()){
-//    Serial.println("Data received"+String(data.get(2)));
-//    return String(data.get(2));
-//  }
-//
-//  return "";
-//}
 
 float readSoilMoisture(){
   float Count = analogRead(A2);
@@ -219,7 +242,7 @@ int digitalReadOutputPin(uint8_t pin)
 
 /*
 Insterrupt Service Routine
- */
+*/
 void pulseCounter()
 {
   // Increment the pulse counter
