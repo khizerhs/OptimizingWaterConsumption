@@ -4,6 +4,7 @@ var cropUserManagement = require('../data_management/crop_user_management');
 var sensorManagement = require('../data_management/sensor_management');
 var thingSpeak = require('../data_management/thing_speak');
 var common = require('./common');
+var ws_emit = require('../socket/smartIrrigation-websocket').emit_ws;
 
 var SensorHistoryManagement = schema.SensorHistory;
 var queryCropUserId = cropUserManagement.queryCropUserId;
@@ -51,6 +52,8 @@ function createSensorHistoryManagement(sensorType, data, sensorId, cropUserId) {
         return null;
     }
 
+    ws_emit(cropUserId, sensorType + ',' + data + ',' + bayTime)
+    
     switch (sensorType) {
         case topics[0]:
             var field2 = 'field2=' + data;

@@ -40,7 +40,7 @@ exports.read_sensor = function(req, res) {
 
 
 exports.update_sensor = function(req, res) {
-  Sensor.findOneAndUpdate(req.params.sensorId, req.body, {new: true}, function(err, sensor) {
+  Sensor.findOneAndUpdate({_id: req.params.sensorId}, req.body, {new: true}, function(err, sensor) {
     if (sensor == undefined || sensor == null)
       res.status(404).json({message: 'sensor Not found'});
     else if (err)
@@ -50,10 +50,7 @@ exports.update_sensor = function(req, res) {
   });
 };
 
-/*
 exports.delete_sensor = function(req, res) {
-
-
   Sensor.remove({
     _id: req.params.sensorId
   }, function(err, sensor) {
@@ -62,7 +59,7 @@ exports.delete_sensor = function(req, res) {
     else
       res.json({ message: 'Sensor successfully deleted' });
   });
-};*/
+};
 
 exports.querySensorId = function(sensorType) {
     switch (sensorType) {

@@ -21,13 +21,12 @@ var userSchema = new mongoose.Schema({
   phone: { type: String, required : true},
   login: { type: String, required : true},
   pass : {type : String, required : true},
-  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
 }, { autoIndex: true });
 
 var sensorSchema = new mongoose.Schema({
   name:{ type: String,required : true},
   description:{ type: String},
-  type : { type: String}
+  sensor_type : { type: String}
 }, { autoIndex: true });
 
 var cropUserSchema = new mongoose.Schema({
@@ -40,7 +39,8 @@ var cropUserSchema = new mongoose.Schema({
   field_capacity: { type: String, required : true},
   acreage : { type: String},
   mad : { type: String, required : true},
-  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}]
+  sensors : [{ type: Schema.Types.ObjectId, ref: 'Sensor'}],
+  water_pouring_time : {type:String}
 }, { autoIndex: true });
 
 var sensorHistorySchema = new mongoose.Schema({
@@ -87,13 +87,6 @@ var waterConsumptionHistorySchema = new mongoose.Schema({
   crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
   evatranspiration:{ type: String},
   water_consumption:{ type: String},
-  creation_date: {type: Date, default: Date.now}
-}, { autoIndex: true });
-
-var sensorHistorySchema = new mongoose.Schema({
-  sensor_id : {type: mongoose.Schema.Types.ObjectId, ref : 'Sensor'},
-  crop_user_id : {type: mongoose.Schema.Types.ObjectId, ref : 'CropUser'},
-  value:{ type:String , required : true},
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 

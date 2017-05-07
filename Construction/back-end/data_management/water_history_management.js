@@ -57,6 +57,9 @@ function createWaterHistoryManagement(data, cropUserId, callback) {
   
   var field4 = 'field4=' + data;
   field4Queue.push(field4);
+
+  ws_emit(cropUserId, 'water,' + data + ',' + bayTime)
+
   callback(null, new waterConsumptionHistory({crop_user_id : cropUserId, evatranspiration: "0", water_consumption:data, creation_date:bayTime}));
 }
 

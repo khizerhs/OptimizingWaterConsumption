@@ -11,7 +11,7 @@ module.exports = function(app) {
   app.route('/users/:userId')
     .get(smartIrrigation.read_user)
     .put(smartIrrigation.update_user)
-    /*.delete(smartIrrigation.delete_user)*/;
+    .delete(smartIrrigation.delete_user);
 
   app.route('/users/login')
     .post(smartIrrigation.login_user);

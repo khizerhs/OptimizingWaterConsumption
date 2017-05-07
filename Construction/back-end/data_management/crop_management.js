@@ -38,7 +38,7 @@ exports.read_crop = function(req, res) {
 
 
 exports.update_crop = function(req, res) {
-  Crop.findOneAndUpdate(req.params.cropId, req.body, {new: true}, function(err, crop) {
+  Crop.findOneAndUpdate({_id: req.params.cropId}, req.body, {new: true}, function(err, crop) {
     if (crop == undefined || crop == null)
       res.status(404).json({message: 'Crop Not found'});
     else if (err)
@@ -49,7 +49,7 @@ exports.update_crop = function(req, res) {
 };
 
 
-/*exports.delete_crop = function(req, res) {
+exports.delete_crop = function(req, res) {
 
 
   Crop.remove({
@@ -61,7 +61,6 @@ exports.update_crop = function(req, res) {
       res.json({ message: 'Crop successfully deleted' });
   });
 };
-*/
 
 
 /*

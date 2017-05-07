@@ -47,4 +47,28 @@ module.exports = function(app) {
         mqtt_client.publish('valve-control', req.param('switch'), {retain: true})
         res.status(200).send()
     })  
+
+  app.route('/arduino_mad_control')
+    .put(function(req, res) {
+        console.log('/arduino_mad_control ' + req.param('mad'))
+        
+        if (null === mqtt_client) {
+          res.status(404).send()
+        }
+        
+        mqtt_client.publish('lower-limit', req.param('mad'), {retain: true})
+        res.status(200).send()
+    })  
+
+  app.route('/arduino_pouring_time_control')
+    .put(function(req, res) {
+        console.log('/arduino_pouring_time_control ' + req.param('time'))
+        
+        if (null === mqtt_client) {
+          res.status(404).send()
+        }
+        
+        mqtt_client.publish('num-iter', req.param('time'), {retain: true})
+        res.status(200).send()
+    })  
 };

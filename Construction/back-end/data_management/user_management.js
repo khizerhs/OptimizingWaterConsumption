@@ -39,7 +39,7 @@ exports.read_user = function(req, res) {
 
 
 exports.update_user = function(req, res) {
-  User.findOneAndUpdate(req.params.userId, req.body, {new: true}, function(err, user) {
+  User.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, user) {
     if (user == undefined || user == null)
       res.status(404).json({message: 'User Not found'});
     else if (err)
@@ -50,7 +50,7 @@ exports.update_user = function(req, res) {
 };
 
 
-/*exports.delete_user = function(req, res) {
+exports.delete_user = function(req, res) {
 
 
   User.remove({
@@ -61,7 +61,7 @@ exports.update_user = function(req, res) {
     else
       res.json({ message: 'User successfully deleted' });
   });
-};*/
+};
 
 exports.login_user = function(req, res) {
   if (undefined === req.body.name || undefined === req.body.password ) {
