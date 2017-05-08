@@ -110,7 +110,7 @@ var arduinoControlSchema = new mongoose.Schema({
 }, { autoIndex: true });
 
 exports.Crop = mongoose.model('Crop', cropSchema);
-exports.CropStage = mongoose.model('CropStage', cropSchema);
+exports.CropStage = mongoose.model('CropStage', cropStageSchema);
 exports.User = mongoose.model('User', userSchema);
 exports.Sensor = mongoose.model('Sensor', sensorSchema);
 exports.CropUser = mongoose.model('CropUser', cropUserSchema);
