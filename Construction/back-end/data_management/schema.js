@@ -95,6 +95,8 @@ var machineLearningSchema = new mongoose.Schema({
   coeffs:{ type:String , required : true},
   variance_score:{ type:String , required : true},
   features_scale:{ type:String },
+  data_max:{ type:String },
+  data_min:{ type:String },
   creation_date: {type: Date, default: Date.now}
 }, { autoIndex: true });
 
