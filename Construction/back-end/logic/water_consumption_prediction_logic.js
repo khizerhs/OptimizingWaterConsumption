@@ -106,7 +106,7 @@ function getWeatherInfo (date, callback){
     console.log(now);
 	
    callCimisApi(now, function(err,data){
-        console.log("Response"+JSON.stringify(data));
+        //console.log("Response"+JSON.stringify(data));
 
 		if(err || data == null || his == null){
 			console.log("Getting data from yesterday")
@@ -118,8 +118,8 @@ function getWeatherInfo (date, callback){
 				records=data.Data.Providers[0].Records;
 				//Peak hour or the hottest time during the day is at three p.m. during the day
 				var his = records[14];
-				console.log(JSON.stringify(his));
-				console.log(JSON.stringify(his));
+				//console.log(JSON.stringify(his));
+				//console.log(JSON.stringify(his));
 				var weatherRecord={
 				  precipitation : his.HlyPrecip.Value,
 				  solar_radiation:his.HlyNetRad.Value,
@@ -137,7 +137,7 @@ function getWeatherInfo (date, callback){
 			var records=data.Data.Providers[0].Records;
 			//Peak hour or the hottest time during the day is at three p.m. during the day
 			var his = records[14];
-			console.log("Data"+JSON.stringify(his));
+			//console.log("Data"+JSON.stringify(his));
 			var weatherRecord={
 			  precipitation : his.HlyPrecip.Value,
 			  solar_radiation:his.HlyNetRad.Value,
@@ -206,7 +206,7 @@ function getWaterConsumptionPrediction (query,callback){
 			callback(err,null)
 		else if(weatherHistory == undefined || weatherHistory.length == 0){
 			getWeatherInfo(date, function(err,weather_data){		
-				console.log("Weather data"+JSON.stringify(weather_data));
+				//console.log("Weather data"+JSON.stringify(weather_data));
 				if(err)
 					return callback(err,null);
 
@@ -221,6 +221,8 @@ function getWaterConsumptionPrediction (query,callback){
 							console.log("Model: "+JSON.stringify(model));
 							var coeffs = model.coeffs.split(",").map(Number);
 							var scale = model.features_scale.split(",").map(Number);
+							var data_max = model.data_max.split(",").map(Number);
+							var data_min = model.data_min.split(",").map(Number);
 							
 							var weather_record = [];
 							for(var key in weather_data){	 
@@ -230,23 +232,35 @@ function getWaterConsumptionPrediction (query,callback){
 							//Include acreage into the weather_record
 							weather_record.unshift(cropUser.acreage)
 							//weather_record = weather_record.slice(2,weather_record.length);
-							console.log("Weather data: "+weather_record);
-							
-							var prediction = math.dotMultiply(coeffs,scale)
-							prediction = math.dotMultiply(prediction,weather_record)
+							//console.log("Weather data: "+weather_record);
+							//console.log("Data min: "+data_min);
+							//console.log("Data max: "+data_max);
+							var numerator = math.subtract(weather_record,data_min);
+							var denominator = math.subtract(data_max,data_min);
+
+							var weather_record_scaled = math.dotDivide(numerator,denominator);
+							console.log("Weather record scaled: ",weather_record_scaled.toString());
+
+							var prediction = math.dotMultiply(coeffs,weather_record_scaled);
+							//var prediction = math.dotMultiply(coeffs,scale);
+							//prediction = math.dotMultiply(prediction,weather_record)
 							console.log("Prediction vector: "+prediction);
 							var prediction = math.sum(prediction)
 							console.log("Prediction result" +prediction);
 							
 							weather_data.water_consumption_predicted = prediction.toString()
 							weather_data.date_prediction = date;
+							
 							waterConsumptionPredictionManagement.createWaterConsumptionPrediction(weather_data,function(err){
 								if(err)
 										return callback(err,null)
-								
+								//Conversion of ccf to liters
+								predictionToLitersInOneDay = prediction*2831.68/cropUser.acreage*cropUser.field_size*24
+
 								//Return the prediction in liters in one day
 								console.log(JSON.stringify(cropUser))
-								predictionToLitersInOneDay = (prediction/cropUser.acreage)/0.035315*cropUser.field_size*24
+								//Conversion of cubic feet to liters
+								//predictionToLitersInOneDay = (prediction/cropUser.acreage)/0.035315*cropUser.field_size*24
 								predictionToLitersInOneDay *= 1000 //convert to mililiters
 								callback(err,{prediction : predictionToLitersInOneDay});
 									
@@ -269,7 +283,10 @@ function getWaterConsumptionPrediction (query,callback){
 					//Return the prediction in liters in one day
 					console.log(JSON.stringify(cropUser))
 					console.log(JSON.stringify(weatherHistory))
-					predictionToLitersInOneDay = (weatherHistory[0].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
+					//Conversion of ccf to liters
+					predictionToLitersInOneDay = prediction*2831.68/cropUser.acreage*cropUser.field_size*24
+					//Conversion of cubic feet to liters
+					//predictionToLitersInOneDay = (weatherHistory[0].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
 					predictionToLitersInOneDay *= 1000 //convert to mililiters
 					callback(err,{prediction : predictionToLitersInOneDay});
 				}
