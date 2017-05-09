@@ -283,7 +283,7 @@ function getWaterConsumptionPrediction (query,callback){
 					console.log(JSON.stringify(cropUser))
 					console.log(JSON.stringify(weatherHistory))
 					//Conversion of ccf to liters
-					predictionToLitersInOneDay = prediction*2831.68/cropUser.acreage*cropUser.field_size*24
+					predictionToLitersInOneDay = weatherHistory[0].water_consumption_predicted*2831.68/cropUser.acreage*cropUser.field_size*24
 					//Conversion of cubic feet to liters
 					//predictionToLitersInOneDay = (weatherHistory[0].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
 					predictionToLitersInOneDay *= 1000 //convert to mililiters
