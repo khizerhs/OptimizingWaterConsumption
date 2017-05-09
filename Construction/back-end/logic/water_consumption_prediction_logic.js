@@ -282,7 +282,7 @@ function getWaterConsumptionPrediction (query,callback){
 
 
 function callCimisApi(now,callback){
-    client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+    client.get("http://et.water.ca.gov/api/data?appKey=309f7764-0eb5-49a8-8119-f09de524046e&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
 		//console.log("Response"+JSON.stringify(data))
 		if(data == 'undefined')
 			return callback(new Error("Weather station data not provided"),null );
