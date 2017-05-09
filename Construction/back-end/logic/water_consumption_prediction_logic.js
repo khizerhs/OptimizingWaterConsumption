@@ -58,7 +58,7 @@ function storeWeatherHistory(){
 	nnow.setDate(nnow.getDate() - 1);
 	var now = moment(nnow).format('YYYY-MM-DD');
     console.log(now);
-	client.get("http://et.water.ca.gov/api/data?appKey=95213f45-359b-4397-a6c3-d6bf33ced5f3&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
+	client.get("http://et.water.ca.gov/api/data?appKey=faca8dc5-bc19-4a0a-829a-d9e14375891e&targets=211&startDate="+now+"&endDate="+now+"&dataItems=hly-precip,hly-net-rad,hly-air-tmp,hly-vap-pres,hly-rel-hum,hly-dew-pnt,hly-wind-spd,hly-wind-dir,hly-soil-tmp", function(data,response){
 		//console.log("Response"+JSON.stringify(data))
 		var history=data.Data.Providers[0].Records;
 		for(var i=0;i<1;i++){
