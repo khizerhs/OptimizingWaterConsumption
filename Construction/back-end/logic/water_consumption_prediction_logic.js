@@ -263,8 +263,7 @@ function getWaterConsumptionPrediction (query,callback){
 								//predictionToLitersInOneDay = (prediction/cropUser.acreage)/0.035315*cropUser.field_size*24
 								predictionToLitersInOneDay *= 1000 //convert to mililiters
 								callback(err,{prediction : predictionToLitersInOneDay});
-									
-								
+																	
 								
 							})
 						}
