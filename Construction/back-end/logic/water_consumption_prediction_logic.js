@@ -182,7 +182,10 @@ var getWaterConsumptionPredictionByRange = function (query,callback){
 				waterConsumptionPredictionManagement.getWaterConsumptionPredictionHistory(startDate.toDate(),endDate.toDate(),function(err,weatherHistory){
 					
 					for(var index in weatherHistory){					
-						var predictionToLitersInOneDay = (weatherHistory[index].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
+						//Conversion of ccf to liters
+						predictionToLitersInOneDay = weatherHistory[index].water_consumption_predicted*2831.68/cropUser.acreage*cropUser.field_size*24
+						//Conversion in cubic feet
+						//var predictionToLitersInOneDay = (weatherHistory[index].water_consumption_predicted/cropUser.acreage)/0.035315*cropUser.field_size*24
 						predictionToLitersInOneDay *= 1000 //convert to mililiters
 						predictions.push({prediction : predictionToLitersInOneDay, date : weatherHistory[index].date_prediction});
 					}
