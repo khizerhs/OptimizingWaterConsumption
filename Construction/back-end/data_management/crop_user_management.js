@@ -6,6 +6,16 @@ exports.queryCropUserId = function (req, res) {
     return mongoose.Types.ObjectId("58caea3116a1664e9fdb71d7")
 }
 
+exports.list_crop_user = function(req, res) {
+  CropUser.find({}, function(err, cropUser) {
+    if (err)
+      res.send(err);
+    else
+      res.json(cropUser);
+  });
+};
+
+
 exports.create_crop_user = function(req, res) {
   var new_crop_user = new CropUser(req.body);
   new_crop_user.save(function(err, user) {

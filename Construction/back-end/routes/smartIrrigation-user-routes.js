@@ -15,4 +15,6 @@ module.exports = function(app) {
 
   app.route('/users/login')
     .post(smartIrrigation.login_user);
+
+  app.route('/users/login-admin').post(smartIrrigation.login_admin_user);
 };

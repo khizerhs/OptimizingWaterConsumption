@@ -4,6 +4,7 @@ module.exports = function(app) {
 
   app.route('/crop-user')
     .post(cropUserManagement.create_crop_user)
+    .get(cropUserManagement.list_crop_user)
 
   app.route('/crop-user/:userId')
     .get(cropUserManagement.get_crop_user)
