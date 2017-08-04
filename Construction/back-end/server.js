@@ -9,7 +9,7 @@ var express = require('express'),
 var http = require("http");
 setInterval(function() {
 	console.log("App ping");
-    http.get("http://sjsusmartfarm-backend.herokuapp.com/");
+    http.get("http://smartfarming.herokuapp.com/");
 }, 300000); // every 5 minutes (300000)
 
 app.set('port', port);
